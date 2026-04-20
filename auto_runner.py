@@ -7,6 +7,7 @@
 import json
 import random
 import sys
+from pathlib import Path
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
@@ -132,9 +133,44 @@ RANDOM_TOPICS = {
 }
 
 
+_LEVEL_STATE_FILE = Path(__file__).parent / "output" / ".last_level"
+
+
+def _pick_level_round_robin() -> str:
+    """轮流选择 level，确保每个 level 都被均匀测试。"""
+    _LEVEL_STATE_FILE.parent.mkdir(exist_ok=True)
+    try:
+        last = _LEVEL_STATE_FILE.read_text(encoding="utf-8").strip()
+        idx = (LEVELS.index(last) + 1) % len(LEVELS) if last in LEVELS else 0
+    except FileNotFoundError:
+        idx = 0
+    level = LEVELS[idx]
+    _LEVEL_STATE_FILE.write_text(level, encoding="utf-8")
+    return level
+
+
+def _pick_topic_unused(level: str) -> str:
+    """优先选择本 level 中尚未使用过的主题；全部用完后重置。"""
+    used_file = Path(__file__).parent / "output" / f".used_topics_{level}"
+    used_file.parent.mkdir(exist_ok=True)
+    pool = RANDOM_TOPICS[level]
+    try:
+        used = set(used_file.read_text(encoding="utf-8").splitlines())
+    except FileNotFoundError:
+        used = set()
+    remaining = [t for t in pool if t not in used]
+    if not remaining:
+        used = set()
+        remaining = pool
+    topic = random.choice(remaining)
+    used.add(topic)
+    used_file.write_text("\n".join(sorted(used)), encoding="utf-8")
+    return topic
+
+
 def auto_run():
-    level = random.choice(LEVELS)
-    topic = random.choice(RANDOM_TOPICS[level])
+    level = _pick_level_round_robin()
+    topic = _pick_topic_unused(level)
 
     print("\n" + "="*60)
     print("  AUTO RUNNER — 51Talk Unit Generator")

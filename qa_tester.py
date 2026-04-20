@@ -34,8 +34,50 @@ BANNED_MODULES   = {"grammar_focus", "speaking_chain", "quick_check"}
 
 
 def _normalize(text: str) -> str:
-    """小写 + 去标点，用于模糊匹配"""
-    return re.sub(r"[^a-z0-9\s]", "", text.lower()).strip()
+    """小写 + 展开缩写 + 去标点，用于模糊匹配"""
+    t = text.lower()
+    # 展开常见英语缩写
+    contractions = {
+        "what's": "what is", "it's": "it is", "that's": "that is",
+        "there's": "there is", "i'm": "i am", "you're": "you are",
+        "he's": "he is", "she's": "she is", "we're": "we are",
+        "they're": "they are", "isn't": "is not", "aren't": "are not",
+        "don't": "do not", "doesn't": "does not", "can't": "cannot",
+        "won't": "will not", "i've": "i have", "you've": "you have",
+        "we've": "we have", "they've": "they have", "i'd": "i would",
+        "you'd": "you would", "he'd": "he would", "she'd": "she would",
+        "we'd": "we would", "they'd": "they would", "i'll": "i will",
+        "you'll": "you will", "he'll": "he will", "she'll": "she will",
+        "we'll": "we will", "they'll": "they will", "let's": "let us",
+    }
+    for short, full in contractions.items():
+        t = t.replace(short, full)
+    # Replace separators (/, |) and placeholder brackets with spaces before stripping punctuation
+    t = re.sub(r"[/|]", " ", t)
+    t = re.sub(r"\[.*?\]", " ", t)   # remove [number], [name] etc.
+    t = re.sub(r"_+", " ", t)        # remove ___ placeholders
+    return re.sub(r"[^a-z0-9\s]", "", t).strip()
+
+
+SENSITIVE_PHRASES = [
+    "playing god", "play god", "act of god", "god's will", "allah's will",
+    "haram", "halal", "infidel", "kafir", "jihad",
+    "allah", "quran", "koran", "prophet",
+    "pork", "alcohol", "beer", "wine", "liquor", "drunk",
+    "israel", "zionist", "gay", "lesbian", "homosexual",
+    "dating", "boyfriend", "girlfriend", "sex", "sexual", "nude",
+    "evolution", "darwin", "big bang",
+    # 服装
+    "bikini", "lingerie",
+    # 猪肉制品（ham/pig 易误匹配，交由 sanitizer 的词边界规则处理）
+    "bacon", "sausage", "pork chop",
+    # 酒精（cocktail/champagne 原列表未覆盖）
+    "cocktail", "champagne",
+    # 非伊斯兰节日
+    "birthday", "christmas", "halloween", "santa", "valentine",
+    # 非伊斯兰宗教符号
+    "church", "bible", "rabbi", "buddha",
+]
 
 
 def programmatic_check_lesson(lesson_data: list[dict], outline_lesson: dict) -> list[str]:
@@ -45,9 +87,16 @@ def programmatic_check_lesson(lesson_data: list[dict], outline_lesson: dict) -> 
       1. 模块完整性 & 违禁模块
       2. 词汇忠实度（useful_language vs outline.vocabulary）
       3. 句型忠实度（conversation_builder vs outline.functional_language）
+      4. 宗教/文化敏感词扫描
     """
     issues = []
     slide_types = [s.get("type", "") for s in lesson_data]
+
+    # ── 4. 敏感词扫描 ──
+    full_text = json.dumps(lesson_data, ensure_ascii=False).lower()
+    found_sensitive = [p for p in SENSITIVE_PHRASES if p in full_text]
+    if found_sensitive:
+        issues.append(f"[红线] 内容含敏感词: {', '.join(found_sensitive)}")
 
     # ── 1. 模块完整性 ──
     present = set(slide_types)
@@ -90,12 +139,26 @@ def programmatic_check_lesson(lesson_data: list[dict], outline_lesson: dict) -> 
     if outline_fl:
         missing_fl = outline_fl - lesson_linkers
         if missing_fl:
-            # 做模糊包含检查：如果 linker 文本包含了 outline 句型，也算覆盖
             still_missing = set()
             all_linker_text = " ".join(lesson_linkers)
             for fl in missing_fl:
-                if fl not in all_linker_text:
-                    still_missing.add(fl)
+                # 1. 子串检查：linker 包含大纲句型
+                if fl in all_linker_text:
+                    continue
+                # 2. 关键词重叠检查：大纲句型的实词 80% 以上出现在某个 linker 里
+                stop = {"a", "an", "the", "is", "are", "it", "i", "you", "we", "they",
+                        "to", "for", "of", "in", "on", "at", "and", "or", "do", "be"}
+                fl_words = [w for w in fl.split() if w not in stop]
+                if fl_words:
+                    matched = False
+                    for linker in lesson_linkers:
+                        hits = sum(1 for w in fl_words if w in linker)
+                        if hits / len(fl_words) >= 0.8:
+                            matched = True
+                            break
+                    if matched:
+                        continue
+                still_missing.add(fl)
             if still_missing:
                 issues.append(f"[句型] 大纲句型未在 conversation_builder 中覆盖: {', '.join(sorted(still_missing))}")
 
@@ -251,14 +314,14 @@ def test_outline(unit_dir: Path) -> str | None:
 
 def test_lessons(unit_dir: Path) -> list[str]:
     print("\n" + "="*60)
-    print("  TEST 2: Lesson Content QA (3 random lessons)")
+    print("  TEST 2: Lesson Content QA (ALL lessons)")
     print("="*60)
 
     outline_path = unit_dir / "unit_outline.json"
     outline = json.loads(outline_path.read_text(encoding="utf-8"))
     outline_lessons = {l["lesson_number"]: l for l in outline.get("lessons", [])}
 
-    lesson_files = pick_random_lessons(unit_dir, n=3)
+    lesson_files = sorted(unit_dir.glob("L*.json"))
     if not lesson_files:
         print("  [ERROR] No lesson JSON files found")
         return []
@@ -333,7 +396,23 @@ def _get_tool_version() -> str:
 
 
 def _is_pass(text: str) -> bool:
-    return "🟢" in text and "完美通过" in text
+    """
+    严格 Pass 标准：
+    1. 包含 🟢（AI 给出绿灯）
+    2. 不含任何 ❌（无硬性问题）
+    3. 总分 >= 90（从文本中提取分数）
+    """
+    if "🟢" not in text:
+        return False
+    if "❌" in text:
+        return False
+    # 提取总分，格式如 "总分：92" 或 "总分: 88/100"
+    m = re.search(r"总分[：:]\s*(\d+)", text)
+    if m:
+        score = int(m.group(1))
+        if score < 90:
+            return False
+    return True
 
 
 def append_qa_log(unit_dir: Path, outline_result: str, lesson_results: list[str]):

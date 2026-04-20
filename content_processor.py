@@ -301,11 +301,13 @@ Keep it short, open-ended, and easy to answer in 2-3 sentences. The warm-up must
 """
     elif slide_type == "scenario":
         if bp_lesson_task:
+            topic_hint = bp_topic or ""
             vocab_lock = f"""SCENARIO TASK LOCK — MANDATORY:
 The scenario role-play MUST exactly follow this lesson task description:
 "{bp_lesson_task}"
 Set the roles (role_a, role_b), problem, mission, and start according to the above task.
 Do NOT invent a different scenario topic, setting, or role-play situation.
+TOPIC CONSISTENCY — MANDATORY: The scenario MUST stay within the same real-world context as the rest of this lesson: "{topic_hint}". Do NOT switch to an unrelated context (e.g. do NOT switch from travel planning to workplace/office scenarios, or from family topics to business topics).
 """
     elif slide_type == "wrap_up":
         if bp_vocab_str or bp_funcs_str:
@@ -362,6 +364,11 @@ RULES:
 - VOCABULARY: Only teach words explicitly listed in the blueprint vocabulary section
 - TITLE LOCK: Do NOT rename slide titles. Use the exact title specified in the template (e.g. "Useful Language (Part 1)", "Useful Language (Part 2)", "Let's Practice", "Conversation Builder", etc.)
 - CCQ QUALITY: For useful_language slides, "check" questions must be open-ended Wh- or choice questions — NEVER Yes/No questions
+- EMOJI COMPLIANCE: NEVER use these emojis in any field: 🎂 🍰 🎁 🎄 🎅 🍺 🍻 🍷 🍸 🍹 🍾 🐷 🥓 🐖 💋 👙 🩲 🩳 🃏. Use neutral alternatives (e.g. for age/time use 📅 or 🔢, for celebration use ⭐ or 🌟).
+- TITLE UNIT FIELD: The "unit" field in the title slide MUST describe the OVERALL UNIT objective (what students can do by the end of the whole unit), NOT the individual lesson objective. Copy it from the blueprint "Unit Objective" field exactly.
+- PRACTICE SCAFFOLDING: The student_guide in practice slides MUST only contain sentence frames explicitly taught in the conversation_builder of THIS lesson. Do NOT add extra phrases not covered in this lesson.
+- MIDDLE EAST COMPLIANCE (ABSOLUTE RED LINE): NEVER use any of the following in any field: "playing God", "play God", "act of God", "God's will", "Allah's will", "haram", "halal", "infidel", "kafir", "jihad", "pork", "alcohol", "beer", "wine", "liquor", "dating", "boyfriend", "girlfriend", "sex", "sexual", "nude", "Israel", "Zionist", "gay", "lesbian", "homosexual", "evolution", "Darwin", or references to non-Islamic religions (church, cross, Bible, rabbi, Buddha, Christmas). Replace any such expression with neutral ethical language (e.g. replace "playing God" with "crossing ethical boundaries").
+- POLITICAL SENSITIVITY (ABSOLUTE RED LINE): NEVER invent or discuss controversial government policies, tax laws, or political decisions attributed to a specific country (especially Saudi Arabia, UAE, or any Middle East nation). Do NOT create scenarios involving "viral rumors about government policy", "controversial new laws", or political unrest. Use generic/global contexts instead (e.g. "a local company" instead of "Saudi businesses", "a new industry regulation" instead of "a new government tax policy").
 
 Generate the JSON now.
 """
@@ -370,15 +377,29 @@ Generate the JSON now.
         expected_words = slide_meta.get("key_points") or bp_vocab
         expected_words = [w.strip().lower() for w in expected_words if w.strip()]
 
+    # Per-slide-type token budget — avoids paying for 8192 on every call
+    _TOKEN_BUDGET = {
+        "title": 512, "warm_up": 1536, "wrap_up": 2048,
+        "useful_language_1": 2048, "useful_language_2": 2048,
+        "conversation_builder": 2560,
+        "practice": 3072, "scenario": 3072,
+    }
+    slide_max_tokens = _TOKEN_BUDGET.get(slide_type, 2048)
+
     for attempt in range(max_retries):
         try:
             response = client.chat.completions.create(
                 model=AI_MODEL,
                 messages=[{"role": "user", "content": prompt}],
                 temperature=AI_TEMPERATURE,
-                max_tokens=8192,
+                max_tokens=slide_max_tokens,
             )
-            raw = _strip_fences(response.choices[0].message.content.strip())
+            raw = response.choices[0].message.content
+            if not raw or not raw.strip():
+                raise ValueError("Empty response from API")
+            raw = _strip_fences(raw.strip())
+            if not raw:
+                raise ValueError("Empty content after stripping fences")
             result = json.loads(raw)
 
             if expected_words and slide_type.startswith("useful_language"):
@@ -619,22 +640,36 @@ def generate_all_slides(level: str, blueprint: str | dict, unit: dict = None) ->
 
 # ── 内容润色 ───────────────────────────────────────────────
 
-def _polish_single_slide(slide: dict) -> dict:
+def _polish_single_slide(slide: dict, max_retries: int = 2) -> dict:
     """Polish a single slide's text content. Returns original slide on any failure."""
     slide_json = json.dumps(slide, indent=2, ensure_ascii=False)
     prompt = _POLISH_PROMPT_TEMPLATE.replace("{{SLIDE_JSON}}", slide_json)
 
-    response = client.chat.completions.create(
-        model=AI_MODEL,
-        messages=[{"role": "user", "content": prompt}],
-        temperature=0.3,
-        max_tokens=4096,
-    )
-    raw = _strip_fences(response.choices[0].message.content.strip())
-    polished = json.loads(raw)
-    if polished.get("type") != slide.get("type"):
-        raise ValueError(f"Type changed: {slide.get('type')} → {polished.get('type')}")
-    return polished
+    for attempt in range(max_retries):
+        try:
+            response = client.chat.completions.create(
+                model=AI_MODEL,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.3,
+                max_tokens=4096,
+            )
+            raw = response.choices[0].message.content
+            if not raw or not raw.strip():
+                raise ValueError("Empty response from API")
+            raw = _strip_fences(raw.strip())
+            if not raw:
+                raise ValueError("Empty content after stripping fences")
+            polished = json.loads(raw)
+            if polished.get("type") != slide.get("type"):
+                raise ValueError(f"Type changed: {slide.get('type')} → {polished.get('type')}")
+            return polished
+        except Exception as e:
+            if attempt < max_retries - 1:
+                wait = 5 * (attempt + 1)
+                print(f"  [WARN] Polish retry {attempt+1}/{max_retries} ({type(e).__name__}: {e}), waiting {wait}s...")
+                time.sleep(wait)
+            else:
+                raise
 
 
 def polish_content(slides: list[dict]) -> list[dict]:

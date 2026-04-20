@@ -92,6 +92,11 @@ def generate_lesson(level: str, lesson: dict, outline: dict, unit_dir: Path) -> 
             print(f"  [2/4] Polishing content...")
             slides = polish_content(slides)
 
+            from sanitizer import sanitize_lesson
+            slides, _san = sanitize_lesson(slides)
+            if _san:
+                print(f"  [SANITIZER] {len(_san)} substitution(s): {'; '.join(_san)}")
+
             base_name = f"L{n}_{safe_name(name)}_{level}"
 
             print(f"  [3/4] Saving JSON...")

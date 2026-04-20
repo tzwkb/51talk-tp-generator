@@ -5,7 +5,7 @@ _LOGO_SRC = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAADAQAAAMUCAYAAACR1RS/A
 
 _GFONTS = '<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">'
 
-_CSS = ':root {
+_CSS = ''':root {
     --primary: #2563eb;
     --primary-light: #eff6ff;
     --primary-dark: #1e3a8a;
@@ -251,7 +251,7 @@ _CSS = ':root {
   @media print {
     body { background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .slide { margin: 0; box-shadow: none; page-break-after: always; }
-  }'
+  }'''
 
 _JS = "\n  function fitSlideBody() {\n    document.querySelectorAll('.slide:not(.slide-cover)').forEach(slide => {\n      const body = slide.querySelector('.slide-body');\n      if (!body) return;\n      const slideH = slide.clientHeight;\n      const topOffset = body.getBoundingClientRect().top - slide.getBoundingClientRect().top;\n      const paddingBottom = 60; // match slide bottom padding\n      const available = slideH - topOffset - paddingBottom;\n      \n      body.style.transform = 'scale(1)';\n      let bodyH = body.scrollHeight;\n      \n      if (bodyH > available) {\n        // Adjusted scaling to be slightly more aggressive if needed\n        const scale = Math.max(0.65, available / bodyH);\n        body.style.transform = `scale(${scale})`;\n        body.style.height = `${available / scale}px`;\n      }\n    });\n  }\n  window.addEventListener('load', fitSlideBody);\n  // Re-run on resize just in case\n  window.addEventListener('resize', fitSlideBody);\n"
 

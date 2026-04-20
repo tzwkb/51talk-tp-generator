@@ -49,6 +49,11 @@ def run_single_lesson():
         slides = generate_all_slides(level, blueprint)
         slides = polish_content(slides)
 
+        from sanitizer import sanitize_lesson
+        slides, _san = sanitize_lesson(slides)
+        if _san:
+            print(f"  [SANITIZER] {len(_san)} substitution(s): {'; '.join(_san)}")
+
         json_path = out / f"{name}_{level}.json"
         with open(json_path, "w", encoding="utf-8") as f:
             json.dump(slides, f, ensure_ascii=False, indent=2)

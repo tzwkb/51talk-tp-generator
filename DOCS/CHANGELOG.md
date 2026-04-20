@@ -4,6 +4,35 @@
 
 ---
 
+## 2026-04-20
+
+### v3.3 — 文化禁忌检测全面加固：关键词补全 + 硬后处理 sanitizer
+
+**来源**：合规审查 — 发现 `bikini`、`birthday`、`bacon`、`cocktail`、`church` 等词未进入程序化关键词列表，仅靠 Emoji 封禁或 AI 语义审查，存在漏网风险；且现有架构缺少"检测到就自动替换"的后处理层
+
+| 改动 | 位置 | 说明 |
+|------|------|------|
+| 补全 `SENSITIVE_PHRASES` 列表 | `qa_tester.py:62` | 新增 14 个漏网词：`bikini` `lingerie` `bacon` `sausage` `pork chop` `cocktail` `champagne` `birthday` `christmas` `halloween` `santa` `valentine` `church` `bible` `rabbi` `buddha`；`ham`/`pig`/`cross`/`easter` 因子串误匹配风险高，改由 sanitizer 词边界规则处理 |
+| 新建 `sanitizer.py` | `sanitizer.py`（新） | 硬后处理模块，基于 `\b` 词边界正则，覆盖猪肉制品、酒精、裸露服装、非伊斯兰节日、非伊斯兰宗教符号共 5 类 22 条规则；检测到即替换为中性词并打印日志；支持 `sanitize_lesson(data)` 和 `sanitize_file(path)` 两种调用方式 |
+
+**关键词覆盖对比**：
+
+| 禁忌类别 | 改前 | 改后 |
+|---------|------|------|
+| 猪肉制品 | 仅 `pork` | `pork` `pork chop` `bacon` `sausage` + sanitizer 覆盖 `ham` `pig` `ribs` |
+| 酒精 | `beer` `wine` `liquor` `alcohol` `drunk` | +`cocktail` `champagne` |
+| 服装 | 仅 Emoji 👙 | +`bikini` `lingerie` |
+| 非伊斯兰节日 | 无 | `birthday` `christmas` `halloween` `santa` `valentine` + sanitizer 覆盖 `easter` |
+| 宗教符号 | 无 | `church` `bible` `rabbi` `buddha` + sanitizer 覆盖 `cross` |
+
+**后处理流程**：sanitizer 在 AI 生成后、写出 JSON / QA 前运行，自动替换违禁词为中性词，全程打印 `[SANITIZER]` 日志；QA 程序化扫描作为第二道保障
+
+| 接入 `sanitize_lesson` 到主生成流程 | `utils.py:generate_lesson`、`main.py:run_single_lesson` | polish 之后、写 JSON 之前调用；有替换时打印 `[SANITIZER] N substitution(s)` |
+
+**改动文件**：`qa_tester.py`、`sanitizer.py`（新增）、`utils.py`、`main.py`
+
+---
+
 ## 2026-04-17
 
 ### v3.2 — 中东内容合规红线全面加入 Prompt 体系
