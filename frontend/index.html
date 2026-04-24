@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>51Talk Lesson Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563EB',
+                        'primary-light': '#EFF6FF',
+                        'primary-dark': '#1E3A8A',
+                        success: '#10B981',
+                        warning: '#F59E0B',
+                        error: '#EF4444',
+                        surface: '#F8FAFC',
+                        card: '#FFFFFF',
+                        'text-primary': '#0F172A',
+                        'text-secondary': '#64748B',
+                        border: '#E2E8F0',
+                        'dark-surface': '#0F172A'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    boxShadow: {
+                        'card': '0 4px 20px rgba(0,0,0,0.06)',
+                        'card-hover': '0 8px 30px rgba(37,99,235,0.12)',
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body class="bg-surface text-text-primary font-sans antialiased">
+
+    <nav class="sticky top-0 z-50 h-[56px] bg-primary-dark flex items-center justify-between px-6 shadow-md">
+        <div class="flex items-center gap-3">
+            <img src="51talklogo.png" alt="51Talk Logo" class="h-[24px] object-contain">
+            <span class="text-white font-semibold tracking-wide border-l border-white/20 pl-3">Lesson Studio</span>
+        </div>
+        <div class="flex items-center gap-4 text-white">
+            <button class="text-sm font-medium hover:text-primary-light transition-colors">EN / AR</button>
+            <button class="p-1 hover:bg-white/10 rounded-full transition-colors">
+                <i class="ph ph-gear text-xl"></i>
+            </button>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-6 py-8">
+        
+        <section class="bg-gradient-to-r from-primary-light to-card rounded-2xl p-8 mb-8 shadow-card flex items-center justify-between border border-border">
+            <div class="max-w-xl">
+                <h1 class="text-4xl font-bold mb-3 text-text-primary">Create AI-powered lesson materials in minutes</h1>
+                <p class="text-text-secondary text-lg mb-6">Seamlessly generate unit outlines, interactive slides, and printable PDFs.</p>
+                <button onclick="goWizard()" class="bg-primary hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-medium shadow-md transition-all hover:shadow-card-hover transform hover:-translate-y-0.5">
+                    + Create New Unit
+                </button>
+            </div>
+            <div class="hidden md:block w-48 h-48 bg-primary/5 rounded-full relative flex items-center justify-center">
+                <i class="ph-duotone ph-stack text-primary text-6xl"></i>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+            <div onclick="goWizard()" class="bg-card rounded-2xl p-6 border border-border shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all cursor-pointer group">
+                <div class="flex items-start gap-4">
+                    <div class="p-3 bg-primary-light rounded-xl group-hover:scale-110 transition-transform">
+                        <i class="ph ph-copy text-primary text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold mb-1">Generate Full Unit</h3>
+                        <p class="text-text-secondary text-sm">6-10 lessons with AI planning chat. Perfect for complete curriculums.</p>
+                    </div>
+                </div>
+            </div>
+            <div onclick="goQuick()" class="bg-card rounded-2xl p-6 border border-border shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all cursor-pointer group">
+                <div class="flex items-start gap-4">
+                    <div class="p-3 bg-emerald-50 rounded-xl group-hover:scale-110 transition-transform">
+                        <i class="ph ph-file-text text-success text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold mb-1">Quick Single Lesson</h3>
+                        <p class="text-text-secondary text-sm">Fast blueprint-to-slide generation. Bypass the session chat.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">Recent Units</h2>
+                <button onclick="loadUnits()" class="text-primary text-sm font-medium hover:underline">Refresh</button>
+            </div>
+            
+            <div id="recent-units-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-card rounded-2xl p-6 border border-border shadow-card flex flex-col h-full">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="bg-gray-100 text-text-secondary text-xs font-bold px-2 py-1 rounded-md">--</span>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-2 text-text-secondary">Loading...</h3>
+                    <p class="text-text-secondary text-xs mb-4">Please wait</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        const API_BASE = window.location.origin;
+
+        function goWizard() { window.location.href = '/wizard.html'; }
+        function goQuick() { window.location.href = '/quick.html'; }
+
+        async function loadUnits() {
+            const container = document.getElementById('recent-units-container');
+            container.innerHTML = `<div class="col-span-full text-center py-12"><i class="ph ph-spinner text-primary text-3xl animate-spin"></i></div>`;
+            
+            try {
+                const res = await fetch(`${API_BASE}/api/units`);
+                const units = await res.json();
+                
+                if (!units || units.length === 0) {
+                    container.innerHTML = `
+                        <div class="col-span-full text-center py-16">
+                            <i class="ph ph-folder-open text-text-secondary text-5xl mb-4"></i>
+                            <p class="text-text-secondary">No units yet. Create your first one above.</p>
+                        </div>`;
+                    return;
+                }
+                
+                const levelColors = {
+                    A1: 'bg-primary-light text-primary',
+                    A2: 'bg-emerald-50 text-success',
+                    B1: 'bg-amber-50 text-warning',
+                    B2: 'bg-orange-50 text-orange-600',
+                    C1: 'bg-rose-50 text-error'
+                };
+                
+                container.innerHTML = units.map(u => {
+                    const badge = levelColors[u.level] || 'bg-gray-100 text-text-secondary';
+                    const chips = (u.files || []).map(f => 
+                        `<span class="bg-gray-100 text-text-secondary text-[11px] px-2 py-1 rounded font-mono uppercase">${f.type}</span>`
+                    ).join('');
+                    
+                    return `
+                    <div class="bg-card rounded-2xl p-6 border border-border shadow-card flex flex-col h-full hover:shadow-card-hover transition-shadow">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="${badge} text-xs font-bold px-2 py-1 rounded-md">${u.level || '--'}</span>
+                        </div>
+                        <h3 class="font-semibold text-lg mb-2 line-clamp-2">${u.name || 'Untitled'}</h3>
+                        <p class="text-text-secondary text-xs mb-4">${u.lessons_count || 0} lessons &bull; ${timeAgo(u.created_at)}</p>
+                        <div class="mt-auto flex gap-2 flex-wrap">${chips}</div>
+                    </div>`;
+                }).join('');
+                
+            } catch (e) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-16">
+                        <i class="ph ph-warning text-error text-4xl mb-4"></i>
+                        <p class="text-text-secondary">Failed to load units. Is the backend running?</p>
+                    </div>`;
+            }
+        }
+
+        function timeAgo(iso) {
+            if (!iso) return 'unknown';
+            const diff = (Date.now() - new Date(iso).getTime()) / 1000;
+            if (diff < 60) return 'just now';
+            if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+            if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+            return Math.floor(diff/86400) + 'd ago';
+        }
+
+        loadUnits();
+    </script>
+</body>
+</html>

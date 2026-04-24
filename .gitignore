@@ -10,5 +10,6 @@ env/
 output/
 *.xlsx
 *.html
+!frontend/*.html
 .DS_Store
 
