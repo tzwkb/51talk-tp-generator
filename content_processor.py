@@ -9,7 +9,8 @@ import time
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 
-from config import AI_MODEL, AI_TEMPERATURE, OUTPUT_DIR, client
+import config
+from config import OUTPUT_DIR, client
 from i18n import _
 
 _RE_VOCAB = re.compile(r'[Vv]ocabulary[:\s]+([^\n]+)')
@@ -184,7 +185,7 @@ Guidelines:
 - C1: advanced; flexible use for social/academic/professional purposes
 """
     response = client.chat.completions.create(
-        model=AI_MODEL,
+        model=config.AI_MODEL,
         messages=[{"role": "user", "content": prompt}],
         temperature=0.3,
         max_tokens=256,
@@ -236,9 +237,9 @@ CRITICAL:
     for attempt in range(max_retries):
         try:
             response = client.chat.completions.create(
-                model=AI_MODEL,
+                model=config.AI_MODEL,
                 messages=[{"role": "user", "content": final_prompt}],
-                temperature=AI_TEMPERATURE,
+                temperature=config.AI_TEMPERATURE,
                 max_tokens=2048,
             )
             raw = response.choices[0].message.content
@@ -431,9 +432,9 @@ Generate the JSON now.
     for attempt in range(max_retries):
         try:
             response = client.chat.completions.create(
-                model=AI_MODEL,
+                model=config.AI_MODEL,
                 messages=[{"role": "user", "content": prompt}],
-                temperature=AI_TEMPERATURE,
+                temperature=config.AI_TEMPERATURE,
                 max_tokens=slide_max_tokens,
             )
             raw = response.choices[0].message.content
@@ -690,7 +691,7 @@ def _polish_single_slide(slide: dict, max_retries: int = 2) -> dict:
     for attempt in range(max_retries):
         try:
             response = client.chat.completions.create(
-                model=AI_MODEL,
+                model=config.AI_MODEL,
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.3,
                 max_tokens=4096,
@@ -759,7 +760,7 @@ def chat_unit_planning(level: str, unit_desc: str) -> list[dict]:
     while True:
         print(_("ai_thinking"))
         response = client.chat.completions.create(
-            model=AI_MODEL, messages=messages, temperature=0.7, max_tokens=1024,
+            model=config.AI_MODEL, messages=messages, temperature=0.7, max_tokens=1024,
         )
         ai_reply = response.choices[0].message.content.strip()
         messages.append({"role": "assistant", "content": ai_reply})
@@ -792,7 +793,7 @@ def generate_unit_outline(messages: list[dict], level: str) -> dict:
     for _attempt in range(3):
         try:
             response = client.chat.completions.create(
-                model=AI_MODEL, messages=gen_messages, temperature=0.7, max_tokens=4096,
+                model=config.AI_MODEL, messages=gen_messages, temperature=0.7, max_tokens=4096,
             )
             raw = response.choices[0].message.content.strip()
         except Exception as e:

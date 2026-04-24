@@ -15,11 +15,12 @@ from typing import Optional
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from config import OUTPUT_DIR, LEVELS, AI_MODEL, client
+import config
+from config import OUTPUT_DIR, LEVELS, client
 from content_processor import (
     generate_unit_outline,
     analyze_level,
@@ -75,6 +76,16 @@ class LessonGenerateRequest(BaseModel):
     blueprint: str
 
 
+class SettingsUpdateRequest(BaseModel):
+    ai_base_url: Optional[str] = None
+    ai_api_key: Optional[str] = None
+    ai_temperature: Optional[float] = None
+    logo_text: Optional[str] = None
+    logo_sub: Optional[str] = None
+    output_html: Optional[bool] = None
+    output_pdf: Optional[bool] = None
+
+
 # ── Session store (in-memory) ───────────────────────────────
 
 _sessions: dict[str, dict] = {}
@@ -92,6 +103,8 @@ def _create_session(level: str, unit_desc: str) -> str:
         ],
         "created_at": datetime.now(),
         "ready": False,
+        "status": "planning",
+        "result": None,
     }
     return sid
 
@@ -173,7 +186,7 @@ async def unit_plan_chat(req: PlanChatRequest):
             session["messages"].append({"role": "user", "content": req.user_input})
 
     response = client.chat.completions.create(
-        model=AI_MODEL,
+        model=config.AI_MODEL,
         messages=session["messages"],
         temperature=0.7,
         max_tokens=1024,
@@ -199,6 +212,16 @@ async def unit_generate(req: GenerateUnitRequest):
     if not session.get("ready"):
         raise HTTPException(status_code=400, detail="Session not ready for generation")
 
+    if session.get("status") == "generating":
+        raise HTTPException(status_code=409, detail="Generation already in progress")
+    if session.get("status") == "complete":
+        q: queue.Queue = queue.Queue()
+        def _replay():
+            q.put(("complete", session["result"]))
+        threading.Thread(target=_replay, daemon=True).start()
+        return StreamingResponse(_sse_event_generator(q), media_type="text/event-stream")
+
+    session["status"] = "generating"
     q: queue.Queue = queue.Queue()
 
     def _worker():
@@ -259,15 +282,19 @@ async def unit_generate(req: GenerateUnitRequest):
                             "type": f.suffix.lstrip("."),
                         })
 
-                q.put(("complete", {
+                result = {
                     "unit_id": unit_dir.name,
                     "unit_name": outline.get("overarching_objective", ""),
                     "level": level,
                     "success": success_count,
                     "total": total,
                     "files": files,
-                }))
+                }
+                session["status"] = "complete"
+                session["result"] = result
+                q.put(("complete", result))
         except Exception as e:
+            session["status"] = "failed"
             q.put(("error", str(e)))
 
     threading.Thread(target=_worker, daemon=True).start()
@@ -388,6 +415,72 @@ async def unit_files(unit_id: str):
                 "type": f.suffix.lstrip(".") or "unknown",
             })
     return {"unit_id": unit_id, "files": files}
+
+
+@app.get("/api/session/{session_id}")
+async def get_session_status(session_id: str):
+    session = _get_session(session_id)
+    return {
+        "session_id": session_id,
+        "level": session.get("level"),
+        "unit_desc": session.get("unit_desc"),
+        "ready": session.get("ready"),
+        "status": session.get("status"),
+        "result": session.get("result"),
+    }
+
+
+# ── Settings ────────────────────────────────────────────────
+
+@app.get("/api/settings")
+async def get_settings():
+    return {
+        "ai_base_url": config.AI_BASE_URL,
+        "ai_api_key": config.AI_API_KEY,
+        "ai_temperature": config.AI_TEMPERATURE,
+        "logo_text": config.LOGO_TEXT,
+        "logo_sub": config.LOGO_SUB,
+        "output_html": config.OUTPUT_HTML,
+        "output_pdf": config.OUTPUT_PDF,
+    }
+
+
+@app.post("/api/settings")
+async def update_settings(req: SettingsUpdateRequest):
+    changed_client = False
+    if req.ai_base_url is not None:
+        config.AI_BASE_URL = req.ai_base_url
+        changed_client = True
+    if req.ai_api_key is not None and req.ai_api_key.strip():
+        config.AI_API_KEY = req.ai_api_key.strip()
+        changed_client = True
+    if req.ai_temperature is not None:
+        config.AI_TEMPERATURE = req.ai_temperature
+    if req.logo_text is not None:
+        config.LOGO_TEXT = req.logo_text
+    if req.logo_sub is not None:
+        config.LOGO_SUB = req.logo_sub
+    if req.output_html is not None:
+        config.OUTPUT_HTML = req.output_html
+    if req.output_pdf is not None:
+        config.OUTPUT_PDF = req.output_pdf
+
+    if changed_client:
+        config.update_client()
+
+    return {"status": "ok"}
+
+
+# ── Frontend root ───────────────────────────────────────────
+
+@app.get("/")
+async def root():
+    return FileResponse("frontend/index.html")
+
+
+# ── Static frontend assets (logo, wizard, quick pages) ──────
+# Mount AFTER API routes so /api/* takes precedence
+app.mount("/", StaticFiles(directory="frontend", html=True), name="frontend")
 
 
 # ── Entrypoint ──────────────────────────────────────────────

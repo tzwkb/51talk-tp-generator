@@ -37,17 +37,18 @@
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="/i18n.js"></script>
 </head>
 <body class="bg-surface text-text-primary font-sans antialiased">
 
     <nav class="sticky top-0 z-50 h-[56px] bg-primary-dark flex items-center justify-between px-6 shadow-md">
         <div class="flex items-center gap-3">
-            <img src="51talklogo.png" alt="51Talk Logo" class="h-[24px] object-contain">
-            <span class="text-white font-semibold tracking-wide border-l border-white/20 pl-3">Lesson Studio</span>
+            <img src="/51talklogo.png" alt="51Talk Logo" class="h-[24px] object-contain">
+            <span data-i18n="brand" class="text-white font-semibold tracking-wide border-l border-white/20 pl-3">Lesson Studio</span>
         </div>
         <div class="flex items-center gap-4 text-white">
-            <button class="text-sm font-medium hover:text-primary-light transition-colors">EN / AR</button>
-            <button class="p-1 hover:bg-white/10 rounded-full transition-colors">
+            <button id="lang-switch" onclick="toggleLang()" class="text-sm font-medium hover:text-primary-light transition-colors min-w-[2rem]">AR</button>
+            <button onclick="toggleSettingsModal()" class="p-1 hover:bg-white/10 rounded-full transition-colors">
                 <i class="ph ph-gear text-xl"></i>
             </button>
         </div>
@@ -57,9 +58,9 @@
         
         <section class="bg-gradient-to-r from-primary-light to-card rounded-2xl p-8 mb-8 shadow-card flex items-center justify-between border border-border">
             <div class="max-w-xl">
-                <h1 class="text-4xl font-bold mb-3 text-text-primary">Create AI-powered lesson materials in minutes</h1>
-                <p class="text-text-secondary text-lg mb-6">Seamlessly generate unit outlines, interactive slides, and printable PDFs.</p>
-                <button onclick="goWizard()" class="bg-primary hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-medium shadow-md transition-all hover:shadow-card-hover transform hover:-translate-y-0.5">
+                <h1 data-i18n="hero_title" class="text-4xl font-bold mb-3 text-text-primary">Create AI-powered lesson materials in minutes</h1>
+                <p data-i18n="hero_sub" class="text-text-secondary text-lg mb-6">Seamlessly generate unit outlines, interactive slides, and printable PDFs.</p>
+                <button data-i18n="hero_cta" onclick="goWizard()" class="bg-primary hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-medium shadow-md transition-all hover:shadow-card-hover transform hover:-translate-y-0.5">
                     + Create New Unit
                 </button>
             </div>
@@ -75,8 +76,8 @@
                         <i class="ph ph-copy text-primary text-2xl"></i>
                     </div>
                     <div>
-                        <h3 class="text-xl font-semibold mb-1">Generate Full Unit</h3>
-                        <p class="text-text-secondary text-sm">6-10 lessons with AI planning chat. Perfect for complete curriculums.</p>
+                        <h3 data-i18n="card_full_title" class="text-xl font-semibold mb-1">Generate Full Unit</h3>
+                        <p data-i18n="card_full_desc" class="text-text-secondary text-sm">6-10 lessons with AI planning chat. Perfect for complete curriculums.</p>
                     </div>
                 </div>
             </div>
@@ -86,8 +87,8 @@
                         <i class="ph ph-file-text text-success text-2xl"></i>
                     </div>
                     <div>
-                        <h3 class="text-xl font-semibold mb-1">Quick Single Lesson</h3>
-                        <p class="text-text-secondary text-sm">Fast blueprint-to-slide generation. Bypass the session chat.</p>
+                        <h3 data-i18n="card_quick_title" class="text-xl font-semibold mb-1">Quick Single Lesson</h3>
+                        <p data-i18n="card_quick_desc" class="text-text-secondary text-sm">Fast blueprint-to-slide generation. Bypass the session chat.</p>
                     </div>
                 </div>
             </div>
@@ -95,8 +96,8 @@
 
         <section>
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold">Recent Units</h2>
-                <button onclick="loadUnits()" class="text-primary text-sm font-medium hover:underline">Refresh</button>
+                <h2 data-i18n="recent_title" class="text-2xl font-bold">Recent Units</h2>
+                <button data-i18n="refresh" onclick="loadUnits()" class="text-primary text-sm font-medium hover:underline">Refresh</button>
             </div>
             
             <div id="recent-units-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -104,13 +105,63 @@
                     <div class="flex justify-between items-start mb-4">
                         <span class="bg-gray-100 text-text-secondary text-xs font-bold px-2 py-1 rounded-md">--</span>
                     </div>
-                    <h3 class="font-semibold text-lg mb-2 text-text-secondary">Loading...</h3>
-                    <p class="text-text-secondary text-xs mb-4">Please wait</p>
+                    <h3 data-i18n="loading" class="font-semibold text-lg mb-2 text-text-secondary">Loading...</h3>
+                    <p data-i18n="loading_wait" class="text-text-secondary text-xs mb-4">Please wait</p>
                 </div>
             </div>
         </section>
 
     </main>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="toggleSettingsModal()"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-card rounded-2xl shadow-2xl border border-border p-6 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold">Settings</h2>
+                <button onclick="toggleSettingsModal()" class="p-1 hover:bg-gray-100 rounded-full"><i class="ph ph-x text-xl text-text-secondary"></i></button>
+            </div>
+            <div class="flex gap-2 mb-6 border-b border-border pb-2">
+                <button onclick="switchSettingTab('ai')" id="tab-ai" class="px-4 py-2 text-sm font-medium text-primary border-b-2 border-primary">AI</button>
+                <button onclick="switchSettingTab('output')" id="tab-output" class="px-4 py-2 text-sm font-medium text-text-secondary hover:text-text-primary">Output</button>
+            </div>
+            <div id="panel-ai" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">API Base URL</label>
+                    <input type="text" id="set-base-url" class="w-full border border-border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none" placeholder="https://api.openai.com/v1">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">API Key</label>
+                    <div class="relative">
+                        <input type="password" id="set-api-key" class="w-full border border-border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none pr-10" placeholder="sk-...">
+                        <button onclick="toggleKeyVisibility()" class="absolute right-2 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary"><i class="ph ph-eye" id="eye-icon"></i></button>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Temperature <span id="set-temp-val" class="text-text-secondary font-normal">0.7</span></label>
+                    <input type="range" id="set-temp" min="0" max="2" step="0.1" value="0.7" class="w-full accent-primary" oninput="document.getElementById('set-temp-val').innerText = this.value">
+                </div>
+            </div>
+            <div id="panel-output" class="space-y-4 hidden">
+                <div class="flex items-center justify-between py-2">
+                    <span class="text-sm font-medium">Export HTML</span>
+                    <button onclick="toggleSwitch(this, 'export_html')" class="w-11 h-6 bg-gray-200 rounded-full relative transition-colors switch-btn" data-on="false">
+                        <span class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform transform translate-x-0 shadow"></span>
+                    </button>
+                </div>
+                <div class="flex items-center justify-between py-2">
+                    <span class="text-sm font-medium">Export PDF</span>
+                    <button onclick="toggleSwitch(this, 'export_pdf')" class="w-11 h-6 bg-primary rounded-full relative transition-colors switch-btn" data-on="true">
+                        <span class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform transform translate-x-5 shadow"></span>
+                    </button>
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end gap-3">
+                <button onclick="toggleSettingsModal()" class="px-4 py-2 text-sm text-text-secondary hover:bg-gray-50 rounded-lg">Cancel</button>
+                <button onclick="saveSettings()" class="px-4 py-2 text-sm bg-primary text-white rounded-lg shadow hover:bg-blue-700">Save</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         const API_BASE = window.location.origin;
@@ -130,8 +181,9 @@
                     container.innerHTML = `
                         <div class="col-span-full text-center py-16">
                             <i class="ph ph-folder-open text-text-secondary text-5xl mb-4"></i>
-                            <p class="text-text-secondary">No units yet. Create your first one above.</p>
+                            <p data-i18n="no_units" class="text-text-secondary">No units yet. Create your first one above.</p>
                         </div>`;
+                    if (window.__currentLang) applyI18n(window.__currentLang);
                     return;
                 }
                 
@@ -154,8 +206,8 @@
                         <div class="flex justify-between items-start mb-4">
                             <span class="${badge} text-xs font-bold px-2 py-1 rounded-md">${u.level || '--'}</span>
                         </div>
-                        <h3 class="font-semibold text-lg mb-2 line-clamp-2">${u.name || 'Untitled'}</h3>
-                        <p class="text-text-secondary text-xs mb-4">${u.lessons_count || 0} lessons &bull; ${timeAgo(u.created_at)}</p>
+                        <h3 class="font-semibold text-lg mb-2 line-clamp-2">${u.name || t('untitled')}</h3>
+                        <p class="text-text-secondary text-xs mb-4">${u.lessons_count || 0} ${t('lessons')} &bull; ${timeAgo(u.created_at)}</p>
                         <div class="mt-auto flex gap-2 flex-wrap">${chips}</div>
                     </div>`;
                 }).join('');
@@ -164,18 +216,111 @@
                 container.innerHTML = `
                     <div class="col-span-full text-center py-16">
                         <i class="ph ph-warning text-error text-4xl mb-4"></i>
-                        <p class="text-text-secondary">Failed to load units. Is the backend running?</p>
+                        <p data-i18n="load_error" class="text-text-secondary">Failed to load units. Is the backend running?</p>
                     </div>`;
+                if (window.__currentLang) applyI18n(window.__currentLang);
             }
         }
 
         function timeAgo(iso) {
-            if (!iso) return 'unknown';
+            if (!iso) return t('unknown');
             const diff = (Date.now() - new Date(iso).getTime()) / 1000;
-            if (diff < 60) return 'just now';
-            if (diff < 3600) return Math.floor(diff/60) + 'm ago';
-            if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
-            return Math.floor(diff/86400) + 'd ago';
+            if (diff < 60) return t('just_now');
+            if (diff < 3600) return Math.floor(diff/60) + t('minutes_ago');
+            if (diff < 86400) return Math.floor(diff/3600) + t('hours_ago');
+            return Math.floor(diff/86400) + t('days_ago');
+        }
+
+        function toggleSettingsModal() {
+            const modal = document.getElementById('settings-modal');
+            modal.classList.toggle('hidden');
+            if (!modal.classList.contains('hidden')) loadSettings();
+        }
+        function switchSettingTab(tab) {
+            ['ai','output'].forEach(t => {
+                document.getElementById('panel-' + t).classList.add('hidden');
+                const btn = document.getElementById('tab-' + t);
+                btn.classList.remove('text-primary','border-b-2','border-primary');
+                btn.classList.add('text-text-secondary');
+            });
+            document.getElementById('panel-' + tab).classList.remove('hidden');
+            const activeBtn = document.getElementById('tab-' + tab);
+            activeBtn.classList.add('text-primary','border-b-2','border-primary');
+            activeBtn.classList.remove('text-text-secondary');
+        }
+        function toggleKeyVisibility() {
+            const input = document.getElementById('set-api-key');
+            const icon = document.getElementById('eye-icon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('ph-eye','ph-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('ph-eye-slash','ph-eye');
+            }
+        }
+        function toggleSwitch(btn, key) {
+            const isOn = btn.getAttribute('data-on') === 'true';
+            const newState = !isOn;
+            btn.setAttribute('data-on', String(newState));
+            const knob = btn.querySelector('span');
+            if (newState) {
+                btn.classList.add('bg-primary'); btn.classList.remove('bg-gray-200');
+                knob.classList.add('translate-x-5'); knob.classList.remove('translate-x-0');
+            } else {
+                btn.classList.remove('bg-primary'); btn.classList.add('bg-gray-200');
+                knob.classList.remove('translate-x-5'); knob.classList.add('translate-x-0');
+            }
+        }
+        async function loadSettings() {
+            try {
+                const res = await fetch(`${API_BASE}/api/settings`);
+                const s = await res.json();
+                document.getElementById('set-base-url').value = s.ai_base_url || '';
+                document.getElementById('set-api-key').value = s.ai_api_key || '';
+                document.getElementById('set-temp').value = s.ai_temperature ?? 0.7;
+                document.getElementById('set-temp-val').innerText = s.ai_temperature ?? 0.7;
+                updateSwitchUI('export_html', s.output_html !== false);
+                updateSwitchUI('export_pdf', s.output_pdf !== false);
+            } catch (e) { console.error('Failed to load settings', e); }
+        }
+        function updateSwitchUI(key, state) {
+            const btns = document.querySelectorAll('.switch-btn');
+            btns.forEach(btn => {
+                if (btn.getAttribute('onclick').includes(key)) {
+                    btn.setAttribute('data-on', String(state));
+                    const knob = btn.querySelector('span');
+                    if (state) {
+                        btn.classList.add('bg-primary'); btn.classList.remove('bg-gray-200');
+                        knob.classList.add('translate-x-5'); knob.classList.remove('translate-x-0');
+                    } else {
+                        btn.classList.remove('bg-primary'); btn.classList.add('bg-gray-200');
+                        knob.classList.remove('translate-x-5'); knob.classList.add('translate-x-0');
+                    }
+                }
+            });
+        }
+        async function saveSettings() {
+            const payload = {
+                ai_base_url: document.getElementById('set-base-url').value || null,
+                ai_temperature: parseFloat(document.getElementById('set-temp').value) || null,
+                output_html: document.querySelector('[onclick*="export_html"]').getAttribute('data-on') === 'true',
+                output_pdf: document.querySelector('[onclick*="export_pdf"]').getAttribute('data-on') === 'true',
+            };
+            const apiKey = document.getElementById('set-api-key').value.trim();
+            if (apiKey) payload.ai_api_key = apiKey;
+
+            try {
+                const res = await fetch(`${API_BASE}/api/settings`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                toggleSettingsModal();
+            } catch (e) {
+                alert('Failed to save settings: ' + e.message);
+            }
         }
 
         loadUnits();

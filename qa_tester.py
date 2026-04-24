@@ -16,7 +16,8 @@ sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 import openpyxl
 from openpyxl.styles import Alignment, Font, PatternFill
-from config import AI_MODEL, client
+import config
+from config import client
 from i18n import _
 
 # ── Prompt 占位符（等待填入）─────────────────────────────────
@@ -245,7 +246,7 @@ def call_ai(prompt: str, max_retries: int = 3) -> str:
     for attempt in range(max_retries):
         try:
             response = client.chat.completions.create(
-                model=AI_MODEL,
+                model=config.AI_MODEL,
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.3,
                 max_tokens=4096,

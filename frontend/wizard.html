@@ -5,20 +5,343 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Unit Wizard - 51Talk Lesson Studio</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = { theme: { extend: { colors: { primary: '#2563EB', 'primary-light': '#EFF6FF', 'primary-dark': '#1E3A8A', success: '#10B981', card: '#FFFFFF', surface: '#F8FAFC', border: '#E2E8F0', 'dark-surface': '#0F172A', 'text-primary': '#0F172A', 'text-secondary': '#64748B' } } } }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <style>body{font-family:'Inter',sans-serif;}</style>
+    <style>
+        .step-pane { display: none; }
+        .step-pane.active { display: block; animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .progress-stripes { background-image: linear-gradient(45deg, rgba(255,255,255,0.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.15) 75%, transparent 75%, transparent); background-size: 1rem 1rem; animation: progress-anim 1s linear infinite; }
+        @keyframes progress-anim { from { background-position: 1rem 0; } to { background-position: 0 0; } }
+    </style>
 </head>
-<body class="bg-[#F8FAFC] text-[#0F172A] min-h-screen flex items-center justify-center">
-    <div class="text-center p-8">
-        <div class="w-20 h-20 bg-[#EFF6FF] rounded-full flex items-center justify-center mx-auto mb-6">
-            <i class="ph ph-hard-hat text-[#2563EB] text-4xl"></i>
-        </div>
-        <h1 class="text-2xl font-bold mb-2">Unit Wizard</h1>
-        <p class="text-[#64748B] mb-6">5-step generation flow is under construction.</p>
-        <a href="/" class="inline-block bg-[#2563EB] hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-medium transition-colors">
-            Back to Dashboard
+<body class="bg-surface text-text-primary font-sans">
+
+    <nav class="sticky top-0 z-50 h-[56px] bg-primary-dark flex items-center justify-between px-6 shadow-md">
+        <a href="/" class="flex items-center gap-3">
+            <img src="/51talklogo.png" alt="Logo" class="h-[24px]">
+            <span data-i18n="brand" class="text-white font-semibold border-l border-white/20 pl-3">Lesson Studio</span>
         </a>
-    </div>
+        <div class="flex items-center gap-4 text-white">
+            <button id="lang-switch" onclick="toggleLang()" class="text-sm hover:text-primary-light min-w-[2rem]">AR</button>
+            <a href="/" class="p-1 hover:bg-white/10 rounded-full"><i class="ph ph-house text-xl"></i></a>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-6 py-8">
+        
+        <div class="flex items-center justify-between mb-8 relative" id="step-indicator">
+            <div class="absolute top-1/2 left-0 right-0 h-[2px] bg-border -z-10 -translate-y-1/2"></div>
+        </div>
+
+        <div class="bg-card rounded-2xl border border-border shadow-card p-8 min-h-[400px]">
+            
+            <div id="step-1" class="step-pane active">
+                <h2 class="text-2xl font-bold mb-4" data-i18n="wizard_step1_title">Describe your teaching needs</h2>
+                <textarea id="w-desc" class="w-full border border-border rounded-lg p-4 focus:ring-2 focus:ring-primary focus:outline-none resize-none mb-3" rows="4" data-i18n="chat_placeholder"></textarea>
+                <div class="flex gap-2 overflow-x-auto pb-2 mb-6">
+                    <button onclick="fillTemplate('Airport directions for beginners')" class="whitespace-nowrap px-4 py-1.5 bg-primary-light text-primary rounded-full text-sm font-medium hover:bg-blue-100">Airport directions</button>
+                    <button onclick="fillTemplate('Business negotiation tactics')" class="whitespace-nowrap px-4 py-1.5 bg-primary-light text-primary rounded-full text-sm font-medium hover:bg-blue-100">Business negotiation</button>
+                </div>
+                <div class="flex justify-between mt-auto">
+                    <a href="/" class="px-6 py-2.5 text-text-secondary hover:bg-gray-50 rounded-lg" data-i18n="btn_back">Back</a>
+                    <button onclick="goToStep(2)" class="px-6 py-2.5 bg-primary text-white rounded-lg shadow disabled:opacity-50" id="btn-s1-next" data-i18n="btn_next" disabled>Next &rarr;</button>
+                </div>
+            </div>
+
+            <div id="step-2" class="step-pane">
+                <h2 class="text-2xl font-bold mb-6" data-i18n="level_selection">Level Selection</h2>
+                
+                <div id="analyze-loading" class="text-center py-10">
+                    <div class="w-16 h-16 rounded-full border-4 border-primary border-t-transparent animate-spin mx-auto mb-4"></div>
+                    <p class="text-text-secondary" data-i18n="analyzing">AI is analyzing...</p>
+                </div>
+
+                <div id="analyze-result" class="hidden">
+                    <div class="bg-primary-light border border-blue-200 rounded-xl p-6 text-center mb-8">
+                        <span class="text-xs font-bold text-primary tracking-wider uppercase mb-2 block">AI Recommended</span>
+                        <div class="text-5xl font-black text-primary mb-3" id="ai-level-badge">A1</div>
+                        <p class="text-text-secondary text-sm" id="ai-level-reason">Reasoning...</p>
+                    </div>
+                    <p class="text-sm text-text-secondary mb-3">Or manually override:</p>
+                    <div class="grid grid-cols-5 gap-3 mb-8" id="level-selector-grid"></div>
+                </div>
+
+                <div class="flex justify-between">
+                    <button onclick="goToStep(1)" class="px-6 py-2.5 text-text-secondary hover:bg-gray-50 rounded-lg" data-i18n="btn_back">Back</button>
+                    <button onclick="goToStep(3)" class="px-6 py-2.5 bg-primary text-white rounded-lg shadow hidden" id="btn-s2-next" data-i18n="btn_next">Next &rarr;</button>
+                </div>
+            </div>
+
+            <div id="step-3" class="step-pane">
+                <h2 class="text-2xl font-bold mb-4" data-i18n="unit_planning_chat">Unit Planning Chat</h2>
+                <div id="chat-box" class="h-[320px] overflow-y-auto bg-surface rounded-xl p-4 mb-4 flex flex-col gap-4 border border-border"></div>
+                
+                <div class="flex gap-2 mb-6">
+                    <input type="text" id="chat-input" class="flex-1 border border-border rounded-lg px-4 focus:ring-2 focus:ring-primary focus:outline-none" data-i18n="chat_placeholder">
+                    <button onclick="sendUserMsg()" class="bg-primary text-white px-4 rounded-lg hover:bg-blue-700"><i class="ph ph-paper-plane-right text-xl"></i></button>
+                    <button onclick="sendUserMsg('proceed')" class="bg-success text-white px-4 rounded-lg font-medium hover:bg-emerald-600" data-i18n="btn_proceed">Proceed</button>
+                </div>
+
+                <div class="flex justify-between">
+                    <button onclick="goToStep(2)" class="px-6 py-2.5 text-text-secondary hover:bg-gray-50 rounded-lg" data-i18n="btn_back">Back</button>
+                    <button onclick="startGeneration()" class="px-6 py-2.5 bg-primary text-white rounded-lg shadow disabled:opacity-50 disabled:cursor-not-allowed" id="btn-generate" disabled data-i18n="btn_generate">Start Generation</button>
+                </div>
+            </div>
+
+            <div id="step-4" class="step-pane">
+                <h2 class="text-2xl font-bold mb-6" data-i18n="generating_unit">Generating Unit...</h2>
+                <div class="h-4 bg-gray-100 rounded-full overflow-hidden mb-2">
+                    <div id="gen-progress" class="h-full bg-primary progress-stripes w-0 transition-all duration-300"></div>
+                </div>
+                <p class="font-medium text-text-primary mb-1" id="gen-status-text">Starting AI engines...</p>
+                
+                <div class="bg-dark-surface mt-6 rounded-xl p-4 h-[240px] overflow-y-auto font-mono text-xs text-slate-300 flex flex-col gap-1" id="log-panel"></div>
+            </div>
+
+            <div id="step-5" class="step-pane">
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="ph ph-check-circle text-success text-4xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold mb-2" data-i18n="generation_complete">Generation Complete</h2>
+                    <p class="text-text-secondary" id="result-summary"></p>
+                </div>
+                
+                <h3 class="font-bold mb-3" data-i18n="unit_files">Unit Files</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8" id="result-files"></div>
+
+                <div class="flex justify-center gap-4">
+                    <button onclick="resetWizard()" class="px-6 py-2.5 text-text-secondary hover:bg-gray-50 rounded-lg border border-border" data-i18n="create_another">Create Another</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="/i18n.js"></script>
+    <script src="/components.js"></script>
+    <script>
+        const API_BASE = window.location.origin;
+        const state = { step: 1, desc: '', level: 'A1', sessionId: null, ready: false, files: [] };
+        let typingIndicator = null;
+
+        document.getElementById('w-desc').addEventListener('input', (e) => {
+            state.desc = e.target.value;
+            document.getElementById('btn-s1-next').disabled = state.desc.trim().length === 0;
+        });
+
+        function fillTemplate(txt) {
+            document.getElementById('w-desc').value = txt;
+            state.desc = txt;
+            document.getElementById('btn-s1-next').disabled = false;
+        }
+
+        function renderSteps() {
+            const container = document.getElementById('step-indicator');
+            container.innerHTML = `<div class="absolute top-1/2 left-0 right-0 h-[2px] bg-border -z-10 -translate-y-1/2"></div>` +
+                [1,2,3,4,5].map(i => `
+                <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors ${
+                    i < state.step ? 'bg-success text-white' : i === state.step ? 'bg-primary text-white shadow-lg ring-4 ring-primary-light' : 'bg-surface border-2 border-border text-text-secondary'
+                }">${i < state.step ? '<i class="ph ph-check"></i>' : i}</div>
+            `).join('');
+        }
+
+        async function goToStep(stepNum) {
+            document.querySelectorAll('.step-pane').forEach(el => el.classList.remove('active'));
+            document.getElementById(`step-${stepNum}`).classList.add('active');
+            state.step = stepNum;
+            renderSteps();
+
+            if (stepNum === 2) {
+                document.getElementById('analyze-loading').classList.remove('hidden');
+                document.getElementById('analyze-result').classList.add('hidden');
+                document.getElementById('btn-s2-next').classList.add('hidden');
+                
+                try {
+                    const res = await fetch(`${API_BASE}/api/analyze-level`, {
+                        method: 'POST', headers: {'Content-Type':'application/json'},
+                        body: JSON.stringify({ description: state.desc })
+                    });
+                    const data = res.ok ? await res.json() : { level: 'B1', reason: 'Fallback to B1 (API Error)' };
+                    
+                    state.level = data.level;
+                    document.getElementById('ai-level-badge').innerText = data.level;
+                    document.getElementById('ai-level-reason').innerText = data.reason;
+                    
+                    Components.renderLevelSelector('level-selector-grid', state.level, (lvl) => { state.level = lvl; });
+                    
+                    document.getElementById('analyze-loading').classList.add('hidden');
+                    document.getElementById('analyze-result').classList.remove('hidden');
+                    document.getElementById('btn-s2-next').classList.remove('hidden');
+                } catch(e) {
+                    console.error('Analyze failed', e);
+                    document.getElementById('analyze-loading').classList.add('hidden');
+                    appendChat('ai', '[System Error] ' + e.message);
+                }
+            }
+
+            if (stepNum === 3 && !state.sessionId) {
+                appendChat('ai', `I'm analyzing your request for a ${state.level} unit about: "${state.desc}". Let me prepare an outline...`);
+                try {
+                    const res = await fetch(`${API_BASE}/api/unit/plan-chat`, {
+                        method: 'POST', headers: {'Content-Type':'application/json'},
+                        body: JSON.stringify({ level: state.level, unit_desc: state.desc, session_id: null })
+                    });
+                    const data = await res.json();
+                    state.sessionId = data.session_id;
+                    appendChat('ai', data.ai_reply);
+                    updateReadyState(data.ready_to_generate);
+                } catch(e) { appendChat('ai', '[System Error] Unable to reach planning API.'); }
+            }
+        }
+
+        function appendChat(role, text) {
+            const box = document.getElementById('chat-box');
+            const div = document.createElement('div');
+            div.className = `max-w-[80%] p-3 rounded-2xl ${role === 'ai' ? 'bg-white border border-border self-start' : 'bg-primary text-white self-end'}`;
+            div.innerHTML = `<p class="text-sm leading-relaxed whitespace-pre-wrap">${text}</p>`;
+            box.appendChild(div);
+            box.scrollTop = box.scrollHeight;
+            return div;
+        }
+
+        function showTyping() {
+            if (typingIndicator) typingIndicator.remove();
+            typingIndicator = appendChat('ai', '<span class="animate-pulse">...</span>');
+        }
+
+        function hideTyping() {
+            if (typingIndicator) { typingIndicator.remove(); typingIndicator = null; }
+        }
+
+        async function sendUserMsg(forcedText = null) {
+            const input = document.getElementById('chat-input');
+            const txt = forcedText || input.value.trim();
+            if (!txt) return;
+            
+            input.value = '';
+            appendChat('user', txt);
+            showTyping();
+
+            try {
+                const res = await fetch(`${API_BASE}/api/unit/plan-chat`, {
+                    method: 'POST', headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({ session_id: state.sessionId, user_input: txt })
+                });
+                const data = await res.json();
+                hideTyping();
+                appendChat('ai', data.ai_reply);
+                updateReadyState(data.ready_to_generate);
+            } catch(e) {
+                hideTyping();
+                appendChat('ai', '[System Error] ' + e.message);
+            }
+        }
+
+        function updateReadyState(isReady) {
+            state.ready = isReady;
+            document.getElementById('btn-generate').disabled = !isReady;
+        }
+
+        function startGeneration() {
+            localStorage.setItem('wizardSessionId', state.sessionId);
+            goToStep(4);
+            const logPanel = document.getElementById('log-panel');
+            logPanel.innerHTML = '';
+            
+            Components.fetchSSE(`${API_BASE}/api/unit/generate`, { session_id: state.sessionId }, {
+                start: (data) => {
+                    document.getElementById('gen-status-text').innerText = `Starting: ${data.unit_name}`;
+                },
+                progress: (data) => {
+                    const percent = Math.round((data.lesson / data.total) * 100);
+                    document.getElementById('gen-progress').style.width = `${percent}%`;
+                    document.getElementById('gen-status-text').innerText = `Lesson ${data.lesson}/${data.total}: ${data.name} [${data.status}]`;
+                },
+                log: (data) => {
+                    const div = document.createElement('div');
+                    div.innerText = `> ${data.line}`;
+                    div.className = "animate-[fadeIn_0.2s_ease-out]";
+                    logPanel.appendChild(div);
+                    logPanel.scrollTop = logPanel.scrollHeight;
+                },
+                complete: (data) => {
+                    document.getElementById('gen-progress').classList.remove('progress-stripes');
+                    document.getElementById('gen-progress').classList.add('bg-success');
+                    
+                    state.files = data.files;
+                    document.getElementById('result-summary').innerText = `${data.success}/${data.total} lessons generated successfully for [${data.unit_name}].`;
+                    Components.renderFileGrid('result-files', data.files);
+                    
+                    setTimeout(() => goToStep(5), 800);
+                },
+                error: (err) => {
+                    logPanel.innerHTML += `<div class="text-error">> System Error: ${err.message || err}</div>`;
+                }
+            });
+        }
+
+        document.getElementById('chat-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendUserMsg();
+        });
+
+        async function resumeSession() {
+            const savedSid = localStorage.getItem('wizardSessionId');
+            if (!savedSid) return;
+            try {
+                const res = await fetch(`${API_BASE}/api/session/${savedSid}`);
+                if (!res.ok) { localStorage.removeItem('wizardSessionId'); return; }
+                const data = await res.json();
+                
+                if (data.status === 'complete') {
+                    state.sessionId = savedSid;
+                    state.level = data.level;
+                    state.result = data.result;
+                    state.files = data.result.files;
+                    goToStep(5);
+                    document.getElementById('result-summary').innerText = `${data.result.success}/${data.result.total} lessons generated successfully for [${data.result.unit_name}].`;
+                    Components.renderFileGrid('result-files', data.result.files);
+                } else if (data.status === 'generating') {
+                    state.sessionId = savedSid;
+                    state.level = data.level;
+                    goToStep(4);
+                    document.getElementById('gen-status-text').innerText = 'Generation in progress on server. Please wait and refresh to see results.';
+                    document.getElementById('gen-progress').classList.add('progress-stripes');
+                    const poll = setInterval(async () => {
+                        const r = await fetch(`${API_BASE}/api/session/${savedSid}`);
+                        const d = await r.json();
+                        if (d.status === 'complete') {
+                            clearInterval(poll);
+                            state.result = d.result;
+                            state.files = d.result.files;
+                            document.getElementById('gen-progress').classList.remove('progress-stripes');
+                            document.getElementById('gen-progress').classList.add('bg-success');
+                            document.getElementById('gen-status-text').innerText = 'Generation complete!';
+                            document.getElementById('result-summary').innerText = `${d.result.success}/${d.result.total} lessons generated successfully for [${d.result.unit_name}].`;
+                            Components.renderFileGrid('result-files', d.result.files);
+                            setTimeout(() => goToStep(5), 600);
+                        }
+                    }, 5000);
+                } else if (data.status === 'planning') {
+                    state.sessionId = savedSid;
+                    state.level = data.level;
+                    state.desc = data.unit_desc;
+                    goToStep(3);
+                }
+            } catch(e) { localStorage.removeItem('wizardSessionId'); }
+        }
+        
+        function resetWizard() {
+            localStorage.removeItem('wizardSessionId');
+            location.reload();
+        }
+
+        renderSteps();
+        resumeSession();
+    </script>
 </body>
 </html>

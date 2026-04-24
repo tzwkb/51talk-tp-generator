@@ -11,7 +11,8 @@ from pathlib import Path
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-from config import LEVELS, AI_MODEL, client
+import config
+from config import LEVELS, client
 from content_processor import (
     generate_unit_outline, lesson_to_blueprint,
     UNIT_SYSTEM_PROMPT,
@@ -33,7 +34,7 @@ def _auto_chat_unit_planning(level: str, unit_desc: str) -> list[dict]:
 
     def _call():
         response = client.chat.completions.create(
-            model=AI_MODEL, messages=messages, temperature=0.7, max_tokens=1024,
+            model=config.AI_MODEL, messages=messages, temperature=0.7, max_tokens=1024,
         )
         return response.choices[0].message.content.strip()
 

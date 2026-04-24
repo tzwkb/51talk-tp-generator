@@ -10,8 +10,19 @@ AI_API_KEY  = "sk-UcHLM9G1fYCgefyghOfdMFJuCrA31Hhrc2uHGLTak4IjG03o"
 AI_MODEL    = "gemini-3.1-pro-preview"
 AI_TEMPERATURE = 1.0
 
-# ── OpenAI client (shared singleton) ────────────────────────
-client = OpenAI(base_url=AI_BASE_URL, api_key=AI_API_KEY, timeout=120.0)
+# ── OpenAI client (dynamic proxy) ───────────────────────────
+class _ClientProxy:
+    _real = None
+    def __getattr__(self, name):
+        if self._real is None:
+            self._real = OpenAI(base_url=AI_BASE_URL, api_key=AI_API_KEY, timeout=120.0)
+        return getattr(self._real, name)
+
+client = _ClientProxy()
+
+def update_client():
+    """Recreate the underlying OpenAI client with current config values."""
+    client._real = OpenAI(base_url=AI_BASE_URL, api_key=AI_API_KEY, timeout=120.0)
 
 # ── 品牌配置 ──────────────────────────────────────────────────
 LOGO_TEXT   = "51Talk"                       # 右上角 Logo 文字
