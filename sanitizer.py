@@ -11,6 +11,7 @@ Usage:
 import json
 import re
 from pathlib import Path
+from i18n import _
 
 # (regex_pattern, replacement, category)
 # Order matters: multi-word patterns before single-word.
@@ -98,18 +99,18 @@ def sanitize_file(json_path: str | Path) -> list[str]:
     cleaned, changes = sanitize_lesson(data)
     if changes:
         path.write_text(json.dumps(cleaned, ensure_ascii=False, indent=2), encoding="utf-8")
-        print(f"[SANITIZER] {path.name}: {len(changes)} substitution(s)")
+        print(_("sanitizer_subs", name=path.name, n=len(changes)))
         for c in changes:
             print(f"  {c}")
     else:
-        print(f"[SANITIZER] {path.name}: clean")
+        print(_("sanitizer_clean", name=path.name))
     return changes
 
 
 if __name__ == "__main__":
     import sys
     if len(sys.argv) < 2:
-        print("Usage: python sanitizer.py <lesson.json> [...]")
+        print(_("sanitizer_usage"))
         sys.exit(1)
     for arg in sys.argv[1:]:
         sanitize_file(arg)

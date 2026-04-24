@@ -10,6 +10,7 @@ from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 
 from config import AI_MODEL, AI_TEMPERATURE, OUTPUT_DIR, client
+from i18n import _
 
 _RE_VOCAB = re.compile(r'[Vv]ocabulary[:\s]+([^\n]+)')
 _RE_FUNCS = re.compile(r'[Ff]unctional [Ll]anguage[:\s]+([^\n]+)')
@@ -131,7 +132,7 @@ PROCEED_KEYWORDS = {"proceed", "generate", "ok", "go", "start", "yes", "ready", 
 # ── 单课大纲生成 ───────────────────────────────────────────
 
 def generate_outline(level: str, blueprint_str: str, max_retries: int = 3) -> list[dict]:
-    print(f"\n[1/3] Generating outline ({level} level)...")
+    print(_("gen_outline", level=level))
 
     base_prompt = load_prompt(level, "Lesson Generator")
     for action_marker in ["# Action", "\nAction\n"]:
@@ -157,6 +158,45 @@ def generate_outline(level: str, blueprint_str: str, max_retries: int = 3) -> li
             '    {"type": "useful_language_1",   "key_points": ["word1", "word2"]},\n'
             '    {"type": "useful_language_2",   "key_points": ["word3", "word4"]},\n'
         )
+
+
+# ── CEFR 级别分析（自然语言 → AI 推荐）──────────────────────
+
+def analyze_level(user_desc: str) -> tuple[str, str]:
+    """让 AI 根据用户自然语言描述判断 CEFR 级别。
+    Returns: (level, reason)
+    """
+    prompt = f"""You are a CEFR level assessment expert for English language teaching.
+Analyze the user's requirement and pick exactly one level from A1, A2, B1, B2, C1.
+
+User description:
+{user_desc}
+
+Respond ONLY in this format:
+LEVEL: <A1|A2|B1|B2|C1>
+REASON: <one-sentence explanation in Chinese>
+
+Guidelines:
+- A1: absolute beginner; greetings, daily routines, very basic phrases
+- A2: elementary; simple routine tasks, past events, simple directions
+- B1: intermediate; travel situations, experiences/ambitions, give reasons
+- B2: upper-intermediate; fluent interaction, complex topics, detailed text
+- C1: advanced; flexible use for social/academic/professional purposes
+"""
+    response = client.chat.completions.create(
+        model=AI_MODEL,
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.3,
+        max_tokens=256,
+    )
+    content = response.choices[0].message.content.strip()
+
+    level_match = re.search(r'LEVEL:\s*(A1|A2|B1|B2|C1)', content, re.IGNORECASE)
+    reason_match = re.search(r'REASON:\s*(.+)', content, re.IGNORECASE)
+
+    level = level_match.group(1).upper() if level_match else "B1"
+    reason = reason_match.group(1).strip() if reason_match else "Default selection"
+    return level, reason
 
     if _funcs:
         cb_schema = f'    {{"type": "conversation_builder","key_points": {json.dumps(_funcs)}}},\n'
@@ -204,14 +244,14 @@ CRITICAL:
             raw = response.choices[0].message.content
             if not raw or not raw.strip():
                 if attempt < max_retries - 1:
-                    print(f"  [WARN] Empty response, retrying ({attempt + 1}/{max_retries})...")
+                    print(_("warn_empty_retry", attempt=attempt+1, max=max_retries))
                     continue
                 raise ValueError("API returned empty content after retries")
 
             raw = raw.strip()
             with open(debug_dir / f"outline_raw_attempt{attempt + 1}.txt", "w", encoding="utf-8") as f:
                 f.write(raw)
-            print(f"  [DEBUG] Saved to {debug_dir / f'outline_raw_attempt{attempt + 1}.txt'}")
+            print(_("debug_saved", path=debug_dir / f"outline_raw_attempt{attempt + 1}.txt"))
 
             raw = _strip_fences(raw)
             outline = json.loads(raw)
@@ -223,16 +263,16 @@ CRITICAL:
 
             with open(debug_dir / "outline_parsed.json", "w", encoding="utf-8") as f:
                 json.dump(outline, f, ensure_ascii=False, indent=2)
-            print(f"  Outline generated: {len(slides)} slides")
+            print(_("outline_generated", n=len(slides)))
             return slides
 
         except Exception as e:
             if attempt < max_retries - 1:
                 wait = 10 * (attempt + 1)
-                print(f"  [WARN] Attempt {attempt + 1} failed ({type(e).__name__}: {e}), waiting {wait}s...")
+                print(_("warn_attempt_failed", attempt=attempt+1, type=type(e).__name__, msg=e, wait=wait))
                 time.sleep(wait)
             else:
-                print(f"  [ERROR] Failed after {max_retries} attempts: {e}")
+                print(_("error_failed_after", max=max_retries, e=e))
                 raise
 
 
@@ -307,6 +347,7 @@ The scenario role-play MUST exactly follow this lesson task description:
 "{bp_lesson_task}"
 Set the roles (role_a, role_b), problem, mission, and start according to the above task.
 Do NOT invent a different scenario topic, setting, or role-play situation.
+ROLE CONSISTENCY — MANDATORY: The role_b description MUST be logically consistent with the problem and mission. For example, if the problem involves a "software partnership", role_b must be a "software vendor", NOT a "logistics vendor". Every detail in role_a, role_b, problem, mission, and start must refer to the SAME business/situation context.
 TOPIC CONSISTENCY — MANDATORY: The scenario MUST stay within the same real-world context as the rest of this lesson: "{topic_hint}". Do NOT switch to an unrelated context (e.g. do NOT switch from travel planning to workplace/office scenarios, or from family topics to business topics).
 """
     elif slide_type == "wrap_up":
@@ -367,7 +408,8 @@ RULES:
 - EMOJI COMPLIANCE: NEVER use these emojis in any field: 🎂 🍰 🎁 🎄 🎅 🍺 🍻 🍷 🍸 🍹 🍾 🐷 🥓 🐖 💋 👙 🩲 🩳 🃏. Use neutral alternatives (e.g. for age/time use 📅 or 🔢, for celebration use ⭐ or 🌟).
 - TITLE UNIT FIELD: The "unit" field in the title slide MUST describe the OVERALL UNIT objective (what students can do by the end of the whole unit), NOT the individual lesson objective. Copy it from the blueprint "Unit Objective" field exactly.
 - PRACTICE SCAFFOLDING: The student_guide in practice slides MUST only contain sentence frames explicitly taught in the conversation_builder of THIS lesson. Do NOT add extra phrases not covered in this lesson.
-- MIDDLE EAST COMPLIANCE (ABSOLUTE RED LINE): NEVER use any of the following in any field: "playing God", "play God", "act of God", "God's will", "Allah's will", "haram", "halal", "infidel", "kafir", "jihad", "pork", "alcohol", "beer", "wine", "liquor", "dating", "boyfriend", "girlfriend", "sex", "sexual", "nude", "Israel", "Zionist", "gay", "lesbian", "homosexual", "evolution", "Darwin", or references to non-Islamic religions (church, cross, Bible, rabbi, Buddha, Christmas). Replace any such expression with neutral ethical language (e.g. replace "playing God" with "crossing ethical boundaries").
+- MIDDLE EAST COMPLIANCE (ABSOLUTE RED LINE): NEVER use any of the following in any field: "playing God", "play God", "act of God", "God's will", "Allah's will", "haram", "halal", "infidel", "kafir", "jihad", "pork", "alcohol", "beer", "wine", "liquor", "dating", "boyfriend", "girlfriend", "romance", "sex", "sexual", "nude", "Israel", "Zionist", "gay", "lesbian", "homosexual", "evolution", "Darwin", or references to non-Islamic religions (church, cross, Bible, rabbi, Buddha, Christmas). Replace any such expression with neutral ethical language (e.g. replace "playing God" with "crossing ethical boundaries"). ALSO: Do NOT invent or discuss controversial local government policies of any specific country.
+- MOVIE/MEDIA EXAMPLES: When giving example movies or TV shows, ONLY use family-friendly globally recognized titles (e.g. Spider-Man, The Lion King, Avatar). NEVER use R-rated or violent titles (e.g. John Wick, Deadpool). NEVER use "romance movie" or "love story" as a genre example — use "comedy" or "documentary" instead.
 - POLITICAL SENSITIVITY (ABSOLUTE RED LINE): NEVER invent or discuss controversial government policies, tax laws, or political decisions attributed to a specific country (especially Saudi Arabia, UAE, or any Middle East nation). Do NOT create scenarios involving "viral rumors about government policy", "controversial new laws", or political unrest. Use generic/global contexts instead (e.g. "a local company" instead of "Saudi businesses", "a new industry regulation" instead of "a new government tax policy").
 
 Generate the JSON now.
@@ -416,9 +458,9 @@ Generate the JSON now.
                         issues.append(f"hallucinated words: {hallucinated}")
                     if missing:
                         issues.append(f"missing words: {missing}")
-                    print(f"    [VOCAB LOCK] Issues detected — {', '.join(issues)}")
+                    print(_("vocab_lock_issues", issues=", ".join(issues)))
                     if attempt < max_retries - 1:
-                        print(f"    [VOCAB LOCK] Retrying with stricter prompt...")
+                        print(_("vocab_lock_retry"))
                         extra_note = f"VOCAB LOCK VIOLATION on previous attempt:"
                         if hallucinated:
                             extra_note += f" Words {hallucinated} are NOT in the required list."
@@ -431,7 +473,7 @@ Generate the JSON now.
                         prompt = prompt_strict
                         continue
                     else:
-                        print(f"    [VOCAB LOCK] Max retries reached — force-injecting missing words")
+                        print(_("vocab_lock_max"))
                         # Python force-inject: ensure every expected word has an entry
                         words_data = result.get("words", [])
                         taught_words = [w.get("word", "").strip().lower() for w in words_data if isinstance(w, dict)]
@@ -444,18 +486,18 @@ Generate the JSON now.
                                     "example": f"Please review the definition of '{missing_word}'.",
                                     "check": f"Can you use '{missing_word}' in a sentence?"
                                 })
-                                print(f"    [VOCAB LOCK] Force-injected: '{missing_word}'")
+                                print(_("vocab_lock_force", word=missing_word))
                         # Remove hallucinated words
                         if hallucinated:
                             words_data = [w for w in words_data if w.get("word", "").strip().lower() not in hallucinated]
-                            print(f"    [VOCAB LOCK] Removed hallucinated: {hallucinated}")
+                            print(_("vocab_lock_removed", words=hallucinated))
                         result["words"] = words_data
 
             return result
 
         except json.JSONDecodeError as e:
             if attempt < max_retries - 1:
-                print(f"    [WARN] Retry {attempt + 1}/{max_retries}: {e}")
+                print(_("warn_retry", attempt=attempt+1, max=max_retries, e=e))
             else:
                 raise
         except Exception as e:
@@ -463,7 +505,7 @@ Generate the JSON now.
             is_rate_limit = "429" in str(e) or "rate" in str(e).lower() or "upstream" in str(e).lower()
             if attempt < max_retries - 1:
                 wait = 15 * (attempt + 1)
-                print(f"    [WARN] Slide gen attempt {attempt+1} failed ({type(e).__name__}), waiting {wait}s...")
+                print(_("warn_slide_gen", attempt=attempt+1, type=type(e).__name__, wait=wait))
                 time.sleep(wait)
             else:
                 raise
@@ -497,13 +539,13 @@ def _fix_outline_key_points(outline: list[dict], vocab: list[str], funcs: list[s
             old = slide.get("key_points", [])
             slide["key_points"] = assigned
             if old != assigned:
-                print(f"  [VOCAB FIX] {slide['type']}: {old} → {assigned}")
+                print(_("vocab_fix", stype=slide['type'], old=old, new=assigned))
     for slide in outline:
         if slide.get("type") == "conversation_builder" and funcs:
             old = slide.get("key_points", [])
             slide["key_points"] = funcs
             if old != funcs:
-                print(f"  [FUNC FIX] conversation_builder: {old} → {funcs}")
+                print(_("func_fix", old=old, new=funcs))
     return outline
 
 
@@ -563,14 +605,14 @@ def generate_all_slides(level: str, blueprint: str | dict, unit: dict = None) ->
     if vocab:
         outline = _fix_outline_key_points(outline, vocab, funcs_list)
 
-    print(f"\n[2/3] Generating slide content (parallel)...")
+    print(_("gen_slide_content"))
 
     slides = [None] * len(outline)
     failed_indices = []
 
     def _gen(i, meta):
         try:
-            print(f"  Generating slide {i+1}/{len(outline)}: {meta['type']}")
+            print(_("generating_slide", i=i+1, total=len(outline), stype=meta['type']))
             # Title slide: build directly from blueprint metadata — NEVER trust AI slide-level outline
             if meta["type"] == "title":
                 title_slide = {
@@ -583,7 +625,7 @@ def generate_all_slides(level: str, blueprint: str | dict, unit: dict = None) ->
                 return i, title_slide, None
             return i, generate_slide_content(level, meta, blueprint_str, blueprint_str, bp_fields=bp_fields), None
         except Exception as e:
-            print(f"    [WARN] Slide {i+1} failed: {e}")
+            print(_("warn_slide_failed", i=i+1, e=e))
             return i, None, e
 
     with ThreadPoolExecutor(max_workers=_PARALLEL_WORKERS) as executor:
@@ -594,15 +636,15 @@ def generate_all_slides(level: str, blueprint: str | dict, unit: dict = None) ->
                 failed_indices.append(i)
 
     if failed_indices:
-        print(f"\n  Retrying {len(failed_indices)} failed slides...")
+        print(_("retrying_failed", n=len(failed_indices)))
         for i in failed_indices:
             meta = outline[i]
-            print(f"  Retry slide {i+1}/{len(outline)}: {meta['type']}")
+            print(_("retry_slide", i=i+1, total=len(outline), stype=meta['type']))
             try:
                 slides[i] = generate_slide_content(level, meta, blueprint_str, blueprint_str, bp_fields=bp_fields, max_retries=3)
-                print(f"    [OK] Retry succeeded")
+                print(_("retry_ok"))
             except Exception as e:
-                print(f"    [ERROR] Retry failed: {e}")
+                print(_("retry_error", e=e))
 
     # ── Check for permanently failed slides ──
     permanently_failed = [(i, outline[i]['type']) for i in range(len(outline)) if slides[i] is None]
@@ -618,15 +660,15 @@ def generate_all_slides(level: str, blueprint: str | dict, unit: dict = None) ->
                 f"Lesson cannot be used — aborting."
             )
         else:
-            print(f"\n  [WARN] {len(permanently_failed)} non-critical slide(s) failed permanently: {failed_types}")
-            print(f"         Lesson will proceed but may be incomplete.")
+            print(_("warn_noncritical", n=len(permanently_failed), types=failed_types))
+            print(_("warn_lesson_incomplete"))
 
     # Force-correct slide titles — AI may rename slides regardless of TITLE LOCK prompt.
     for slide in slides:
         if slide and slide.get("type") in TITLE_MAP:
             correct_title = TITLE_MAP[slide["type"]]
             if slide.get("title") != correct_title:
-                print(f"  [TITLE FIX] {slide['type']}: \"{slide.get('title')}\" → \"{correct_title}\"")
+                print(_("title_fix", stype=slide['type'], old=slide.get('title'), new=correct_title))
                 slide["title"] = correct_title
 
     final_slides = [s for s in slides if s is not None]
@@ -634,7 +676,7 @@ def generate_all_slides(level: str, blueprint: str | dict, unit: dict = None) ->
     expected_count = len(outline)
     actual_count = len(final_slides)
     if actual_count < expected_count:
-        print(f"\n  [WARN] Returning {actual_count}/{expected_count} slides (missing: {[outline[i]['type'] for i in range(len(outline)) if slides[i] is None]})")
+        print(_("warn_missing_slides", actual=actual_count, expected=expected_count, types=[outline[i]['type'] for i in range(len(outline)) if slides[i] is None]))
     return final_slides
 
 
@@ -666,14 +708,14 @@ def _polish_single_slide(slide: dict, max_retries: int = 2) -> dict:
         except Exception as e:
             if attempt < max_retries - 1:
                 wait = 5 * (attempt + 1)
-                print(f"  [WARN] Polish retry {attempt+1}/{max_retries} ({type(e).__name__}: {e}), waiting {wait}s...")
+                print(_("warn_polish_retry", attempt=attempt+1, max=max_retries, type=type(e).__name__, msg=e, wait=wait))
                 time.sleep(wait)
             else:
                 raise
 
 
 def polish_content(slides: list[dict]) -> list[dict]:
-    print(f"\n[3/3] Polishing content...")
+    print(_("polishing"))
 
     results = [None] * len(slides)
     failed = []
@@ -689,14 +731,14 @@ def polish_content(slides: list[dict]) -> list[dict]:
             if polished is not None:
                 results[i] = polished
             else:
-                print(f"  [WARN] Slide {i+1} polish failed ({err}), using original")
+                print(_("warn_polish_failed", i=i+1, err=err))
                 results[i] = slides[i]
                 failed.append(i)
 
     if not failed:
-        print("  [OK] Polish applied successfully")
+        print(_("ok_polish_all"))
     else:
-        print(f"  [OK] Polish applied ({len(slides)-len(failed)}/{len(slides)} slides polished)")
+        print(_("ok_polish_partial", ok=len(slides)-len(failed), total=len(slides)))
 
     return results
 
@@ -705,8 +747,8 @@ def polish_content(slides: list[dict]) -> list[dict]:
 
 def chat_unit_planning(level: str, unit_desc: str) -> list[dict]:
     print("\n" + "="*60)
-    print("  Unit Planning Chat")
-    print("  Type 'proceed' (or ok/go/start/yes) when ready to generate.")
+    print(_("unit_planning_chat"))
+    print(_("proceed_hint"))
     print("="*60)
 
     messages = [
@@ -715,20 +757,20 @@ def chat_unit_planning(level: str, unit_desc: str) -> list[dict]:
     ]
 
     while True:
-        print("\n[AI thinking...]\n")
+        print(_("ai_thinking"))
         response = client.chat.completions.create(
             model=AI_MODEL, messages=messages, temperature=0.7, max_tokens=1024,
         )
         ai_reply = response.choices[0].message.content.strip()
         messages.append({"role": "assistant", "content": ai_reply})
-        print(f"AI: {ai_reply}\n")
+        print(_("ai_prefix", reply=ai_reply))
 
         ai_ready = "[READY TO GENERATE]" in ai_reply
-        user_input = input("You: ").strip() or "proceed"
+        user_input = input(_("you_prompt")).strip() or "proceed"
 
         messages.append({"role": "user", "content": user_input})
         if user_input.lower() in PROCEED_KEYWORDS or ai_ready:
-            print("\n[Starting outline generation...]\n")
+            print(_("starting_outline"))
             break
 
     return messages
@@ -736,14 +778,14 @@ def chat_unit_planning(level: str, unit_desc: str) -> list[dict]:
 
 def generate_unit_outline(messages: list[dict], level: str) -> dict:
     import time as _time
-    print("[Generating unit outline JSON...]")
+    print(_("generating_outline_json"))
     gen_messages = messages + [{"role": "user", "content": UNIT_OUTLINE_INSTRUCTION}]
 
     debug_dir = Path(OUTPUT_DIR) / "_debug"
     debug_dir.mkdir(parents=True, exist_ok=True)
     with open(debug_dir / "unit_chat_history.json", "w", encoding="utf-8") as f:
         json.dump(gen_messages, f, ensure_ascii=False, indent=2)
-    print(f"  [DEBUG] Saved to {debug_dir / 'unit_chat_history.json'}")
+    print(_("debug_saved", path=debug_dir / "unit_chat_history.json"))
 
     # Retry on timeout/429/truncated JSON — up to 3 full attempts
     outline = None
@@ -756,7 +798,7 @@ def generate_unit_outline(messages: list[dict], level: str) -> dict:
         except Exception as e:
             if _attempt < 2:
                 _wait = 30 * (_attempt + 1)
-                print(f"  [RETRY] generate_unit_outline failed ({type(e).__name__}), waiting {_wait}s...")
+                print(_("retry_outline", type=type(e).__name__, wait=_wait))
                 _time.sleep(_wait)
                 continue
             else:
@@ -764,7 +806,7 @@ def generate_unit_outline(messages: list[dict], level: str) -> dict:
 
         with open(debug_dir / "unit_outline_raw.txt", "w", encoding="utf-8") as f:
             f.write(raw)
-        print(f"  [DEBUG] Saved to {debug_dir / 'unit_outline_raw.txt'}")
+        print(_("debug_saved", path=debug_dir / "unit_outline_raw.txt"))
 
         raw_clean = _strip_fences(raw)
         try:
@@ -779,10 +821,10 @@ def generate_unit_outline(messages: list[dict], level: str) -> dict:
             except json.JSONDecodeError as e2:
                 if _attempt < 2:
                     _wait = 10 * (_attempt + 1)
-                    print(f"  [RETRY] unit outline JSON truncated ({e2}), waiting {_wait}s...")
+                    print(_("retry_outline_truncated", e=e2, wait=_wait))
                     _time.sleep(_wait)
                 else:
-                    print(f"  [ERROR] Failed to parse unit outline JSON after 3 attempts: {e2}\n  Raw (first 500):\n{raw[:500]}")
+                    print(_("error_outline_parse", e=e2, raw=raw[:500]))
                     raise e2
 
     if outline is None:
@@ -796,7 +838,7 @@ def generate_unit_outline(messages: list[dict], level: str) -> dict:
     with open(debug_dir / "unit_outline_parsed.json", "w", encoding="utf-8") as f:
         json.dump(outline, f, ensure_ascii=False, indent=2)
 
-    print(f"  Unit outline: {outline.get('unit_name','?')} | {len(outline['lessons'])} lessons")
+    print(_("unit_outline_summary", name=outline.get('unit_name','?'), n=len(outline['lessons'])))
     return outline
 
 

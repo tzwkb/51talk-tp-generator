@@ -19,6 +19,7 @@ from content_processor import (
 from slide_renderer import build_html, export_pdf
 from qa_tester import test_outline, test_lessons, append_qa_log
 from utils import safe_name, retry_with_backoff, create_unit_dir, ensure_debug_dir, generate_lesson
+from i18n import _
 
 
 # ── Unit planning (non-interactive) ──────────────────────
@@ -173,10 +174,10 @@ def auto_run():
     topic = _pick_topic_unused(level)
 
     print("\n" + "="*60)
-    print("  AUTO RUNNER — 51Talk Unit Generator")
+    print(_("auto_runner_title"))
     print("="*60)
-    print(f"  Level : {level}")
-    print(f"  Topic : {topic}")
+    print(_("level_label", level=level))
+    print(_("topic_label", topic=topic))
     print("="*60 + "\n")
 
     messages = _auto_chat_unit_planning(level, topic)
@@ -184,14 +185,14 @@ def auto_run():
     try:
         outline = generate_unit_outline(messages, level)
     except Exception as e:
-        print(f"[ERROR] Could not generate unit outline: {e}")
+        print(_("error_outline", e=e))
         return None
 
     unit_dir = create_unit_dir(outline, level)
 
     with open(unit_dir / "unit_outline.json", "w", encoding="utf-8") as f:
         json.dump(outline, f, ensure_ascii=False, indent=2)
-    print(f"[OK] Unit outline saved: {unit_dir / 'unit_outline.json'}")
+    print(_("ok_outline_saved", path=unit_dir / "unit_outline.json"))
 
     debug_dir = ensure_debug_dir()
     total = len(outline["lessons"])
@@ -201,7 +202,7 @@ def auto_run():
         n = lesson.get("lesson_number", "?")
         name = lesson.get("lesson_name", "")
         print(f"\n{'-'*60}")
-        print(f"  Lesson {n}/{total}: {name}")
+        print(_("lesson_header", n=n, total=total, name=name))
         print(f"{'-'*60}")
 
         blueprint = lesson_to_blueprint(lesson, outline)
@@ -212,11 +213,11 @@ def auto_run():
             success_count += 1
 
     print(f"\n{'='*60}")
-    print(f"  Generation complete: {success_count}/{total} lessons")
-    print(f"  Output: {unit_dir.resolve()}")
+    print(_("gen_complete", success=success_count, total=total))
+    print(_("output_path", path=unit_dir.resolve()))
     print(f"{'='*60}\n")
 
-    print("  Running QA tests automatically...\n")
+    print(_("running_qa_auto"))
     outline_result = test_outline(unit_dir)
     lesson_results = test_lessons(unit_dir)
     append_qa_log(unit_dir, outline_result, lesson_results)

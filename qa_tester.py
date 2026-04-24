@@ -17,6 +17,7 @@ sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 import openpyxl
 from openpyxl.styles import Alignment, Font, PatternFill
 from config import AI_MODEL, client
+from i18n import _
 
 # ── Prompt 占位符（等待填入）─────────────────────────────────
 
@@ -253,7 +254,7 @@ def call_ai(prompt: str, max_retries: int = 3) -> str:
         except Exception as e:
             if "429" in str(e) and attempt < max_retries - 1:
                 wait = 30 * (attempt + 1)
-                print(f"  [RATE LIMIT] 429 错误，等待 {wait}s 后重试 ({attempt+1}/{max_retries})...")
+                print(_("rate_limit", wait=wait, attempt=attempt+1, max=max_retries))
                 time.sleep(wait)
             else:
                 raise
@@ -265,7 +266,7 @@ def save_result(unit_dir: Path, test_name: str, content: str):
     timestamp = datetime.now().strftime("%m%d_%H%M%S")
     out_path = qa_dir / f"{test_name}_{timestamp}.txt"
     out_path.write_text(content, encoding="utf-8")
-    print(f"  [OK] Saved: {out_path}")
+    print(_("ok_saved", path=out_path))
     return out_path
 
 
@@ -273,12 +274,12 @@ def save_result(unit_dir: Path, test_name: str, content: str):
 
 def test_outline(unit_dir: Path) -> str | None:
     print("\n" + "="*60)
-    print("  TEST 1: Unit Outline QA")
+    print(_("test1_title"))
     print("="*60)
 
     outline_path = unit_dir / "unit_outline.json"
     if not outline_path.exists():
-        print(f"  [ERROR] unit_outline.json not found in {unit_dir}")
+        print(_("error_outline_not_found", path=unit_dir))
         return None
 
     outline = json.loads(outline_path.read_text(encoding="utf-8"))
@@ -286,16 +287,16 @@ def test_outline(unit_dir: Path) -> str | None:
     # ── 程序化校验（先于 AI）──
     prog_issues = programmatic_check_outline(outline)
     if prog_issues:
-        print("\n  ⚙️  程序化校验发现问题:")
+        print(_("prog_issues_found"))
         for iss in prog_issues:
             print(f"    ❌ {iss}")
     else:
-        print("\n  ⚙️  程序化校验: ✅ 全部通过")
+        print(_("prog_pass"))
 
     outline_text = json.dumps(outline, ensure_ascii=False, indent=2)
     prompt = OUTLINE_QA_PROMPT.replace("{{OUTLINE}}", outline_text)
 
-    print("  [AI] Evaluating outline...")
+    print(_("ai_eval_outline"))
     result = call_ai(prompt)
 
     # 把程序化校验结果附加到 AI 结果前面
@@ -314,7 +315,7 @@ def test_outline(unit_dir: Path) -> str | None:
 
 def test_lessons(unit_dir: Path) -> list[str]:
     print("\n" + "="*60)
-    print("  TEST 2: Lesson Content QA (ALL lessons)")
+    print(_("test2_title"))
     print("="*60)
 
     outline_path = unit_dir / "unit_outline.json"
@@ -323,7 +324,7 @@ def test_lessons(unit_dir: Path) -> list[str]:
 
     lesson_files = sorted(unit_dir.glob("L*.json"))
     if not lesson_files:
-        print("  [ERROR] No lesson JSON files found")
+        print(_("error_no_lesson_json"))
         return []
 
     # ── Phase 1: Programmatic checks (fast, serial) ──
@@ -337,11 +338,11 @@ def test_lessons(unit_dir: Path) -> list[str]:
 
         prog_issues = programmatic_check_lesson(lesson_content, lesson_outline)
         if prog_issues:
-            print(f"\n  ⚙️  {f.name} 程序化校验发现问题:")
+            print(_("prog_lesson_issues", fname=f.name))
             for iss in prog_issues:
                 print(f"    ❌ {iss}")
         else:
-            print(f"\n  ⚙️  {f.name} 程序化校验: ✅ 全部通过")
+            print(_("prog_lesson_pass", fname=f.name))
 
         prompt = (
             LESSON_QA_PROMPT
@@ -355,7 +356,7 @@ def test_lessons(unit_dir: Path) -> list[str]:
 
     def _eval_lesson(task):
         f, lesson_num, prog_issues, prompt = task
-        print(f"\n  [AI] Evaluating {f.name}...")
+        print(_("ai_eval_lesson", fname=f.name))
         ai_result = call_ai(prompt)
         if prog_issues:
             prog_header = f"⚙️ {f.name} 程序化校验结果:\n" + "\n".join(f"  ❌ {i}" for i in prog_issues) + "\n\n"
@@ -503,9 +504,9 @@ def append_qa_log(unit_dir: Path, outline_result: str, lesson_results: list[str]
         ts = datetime.now().strftime("%m%d_%H%M%S")
         save_path = LOG_PATH.parent / f"qa_log_{ts}.xlsx"
         wb.save(save_path)
-        print(f"\n  [WARN] qa_log.xlsx is open in Excel. Saved to: {save_path.name}")
-    print(f"\n  [OK] QA log updated: {save_path.resolve()}")
-    print(f"  Result: {passed}")
+        print(_("warn_excel_open", name=save_path.name))
+    print(_("ok_qa_log", path=save_path.resolve()))
+    print(_("result", passed=passed))
 
 
 # ── 主入口 ────────────────────────────────────────────────
@@ -516,10 +517,10 @@ if __name__ == "__main__":
     try:
         unit_dir = find_unit_dir(unit_path_arg)
     except FileNotFoundError as e:
-        print(f"[ERROR] {e}")
+        print(_("error", e=e))
         sys.exit(1)
 
-    print(f"\nUnit folder: {unit_dir.resolve()}")
+    print(_("unit_folder", path=unit_dir.resolve()))
 
     outline_result = test_outline(unit_dir)
     lesson_results = test_lessons(unit_dir)
@@ -527,5 +528,5 @@ if __name__ == "__main__":
     append_qa_log(unit_dir, outline_result, lesson_results)
 
     print("\n" + "="*60)
-    print("  QA complete. Results saved to _qa/ folder.")
+    print(_("qa_complete"))
     print("="*60 + "\n")
