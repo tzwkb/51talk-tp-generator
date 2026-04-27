@@ -1,0 +1,199 @@
+{
+  "level": "A2",
+  "total_lessons": 10,
+  "overarching_objective": "The student can discuss basic aspects of Chinese culture, including food, tea, family traditions, and famous landmarks, using simple A2 vocabulary and spoken phrases.",
+  "final_task": "A role-play where the student acts as a cultural guide explaining Chinese traditions (food, tea, family, and landmarks) to the tutor, who plays a Saudi tourist planning a trip to China.",
+  "lessons": [
+    {
+      "lesson_number": 1,
+      "lesson_name": "Famous Places in China",
+      "objective": "The student can talk about famous Chinese landmarks and express a desire to visit them.",
+      "vocabulary": [
+        "capital",
+        "tourist",
+        "famous",
+        "huge",
+        "wall"
+      ],
+      "functional_language": [
+        "I want to visit...",
+        "I'd like to see...",
+        "I hope to go to..."
+      ],
+      "topic": "The Great Wall and the capital city of Beijing.",
+      "lesson_task": "Role-play: The tutor asks the student what famous places they want to visit in China. The student verbally explains which places they want to see and why they are interesting."
+    },
+    {
+      "lesson_number": 2,
+      "lesson_name": "Chinese Tea Culture",
+      "objective": "The student can offer a drink to a guest and describe traditional hospitality.",
+      "vocabulary": [
+        "pour",
+        "guest",
+        "polite",
+        "serve",
+        "traditional"
+      ],
+      "functional_language": [
+        "Would you like some tea?",
+        "Here you go.",
+        "Please have some."
+      ],
+      "topic": "How tea is served to guests in China, comparing it to Saudi coffee culture.",
+      "lesson_task": "Role-play: The student acts as a Chinese host offering tea to the tutor (the guest). The student verbally explains how to serve it and why it is polite."
+    },
+    {
+      "lesson_number": 3,
+      "lesson_name": "Traditional Chinese Food",
+      "objective": "The student can describe simple meals and ingredients.",
+      "vocabulary": [
+        "bowl",
+        "chopsticks",
+        "delicious",
+        "popular",
+        "meal"
+      ],
+      "functional_language": [
+        "It tastes very...",
+        "It's made with...",
+        "It comes with..."
+      ],
+      "topic": "Halal Chinese food (noodles, rice) and eating with chopsticks for a tourist.",
+      "lesson_task": "Role-play: The tutor plays a hungry tourist. The student verbally recommends a popular Chinese meal, describes what it is made with, and explains how to eat it with chopsticks."
+    },
+    {
+      "lesson_number": 4,
+      "lesson_name": "Family Life in China",
+      "objective": "The student can talk about family traditions and showing respect to older people.",
+      "vocabulary": [
+        "respect",
+        "elder",
+        "generation",
+        "together",
+        "obey"
+      ],
+      "functional_language": [
+        "It is important to...",
+        "You should always...",
+        "Make sure to..."
+      ],
+      "topic": "Respecting elders and eating a traditional meal together as a family.",
+      "lesson_task": "Guided discussion: The student verbally explains Chinese family traditions to the tutor, discussing how younger generations show respect to elders, and compares this to Saudi family life."
+    },
+    {
+      "lesson_number": 5,
+      "lesson_name": "Traditional Arts and Crafts",
+      "objective": "The student can ask and answer questions about handmade objects.",
+      "vocabulary": [
+        "brush",
+        "paint",
+        "silk",
+        "beautiful",
+        "craft"
+      ],
+      "functional_language": [
+        "What is this made of?",
+        "How do you use it?",
+        "Is it handmade?"
+      ],
+      "topic": "Chinese calligraphy and famous beautiful silk.",
+      "lesson_task": "Role-play: The student plays a shop owner selling famous traditional crafts. The tutor plays a customer asking questions about the silk and paint brushes. The student orally answers the questions."
+    },
+    {
+      "lesson_number": 6,
+      "lesson_name": "Ancient Chinese Inventions",
+      "objective": "The student can explain the basic use of simple tools and inventions.",
+      "vocabulary": [
+        "invent",
+        "paper",
+        "compass",
+        "useful",
+        "tool"
+      ],
+      "functional_language": [
+        "People use this to...",
+        "It helps you to...",
+        "You can use it for..."
+      ],
+      "topic": "How the compass and paper changed the world, becoming popular huge helps for travelers.",
+      "lesson_task": "Role-play: The student verbally explains a popular Chinese invention to the tutor, describing why it was invented and how it is a useful tool."
+    },
+    {
+      "lesson_number": 7,
+      "lesson_name": "The Silk Road",
+      "objective": "The student can talk about past travel and buying/selling goods.",
+      "vocabulary": [
+        "trade",
+        "merchant",
+        "journey",
+        "route",
+        "exchange"
+      ],
+      "functional_language": [
+        "They traveled by...",
+        "Long ago, people...",
+        "In the past, they..."
+      ],
+      "topic": "Historical trade between China and the Middle East, exchanging silk and crafts.",
+      "lesson_task": "Role-play: The student acts as an ancient merchant on the Silk Road talking to the tutor (another merchant) about their long journey and what goods they want to trade."
+    },
+    {
+      "lesson_number": 8,
+      "lesson_name": "Modern Cities vs. Traditional Villages",
+      "objective": "The student can compare two different places using simple adjectives.",
+      "vocabulary": [
+        "modern",
+        "quiet",
+        "busy",
+        "building",
+        "village"
+      ],
+      "functional_language": [
+        "...is busier than...",
+        "...is quieter than...",
+        "...is more modern than..."
+      ],
+      "topic": "Comparing life in a busy modern city to a quiet village where generations live together.",
+      "lesson_task": "Guided discussion: The tutor asks the student to compare a busy Chinese city to a quiet village. The student verbally uses comparisons to explain where they prefer to go on a journey."
+    },
+    {
+      "lesson_number": 9,
+      "lesson_name": "Planning a Trip to China",
+      "objective": "The student can discuss travel plans and what to pack.",
+      "vocabulary": [
+        "ticket",
+        "flight",
+        "pack",
+        "hotel",
+        "guidebook"
+      ],
+      "functional_language": [
+        "I need to book...",
+        "We should pack...",
+        "Don't forget to..."
+      ],
+      "topic": "Preparing for a flight to see Chinese culture, acting as a tourist looking for delicious food.",
+      "lesson_task": "Role-play: The tutor and student verbally plan a trip to China. The student tells the tutor what to pack, which hotel to book, and what guidebook to buy."
+    },
+    {
+      "lesson_number": 10,
+      "lesson_name": "Presenting a Chinese Culture Guide",
+      "objective": "The student can give simple recommendations and explain basic cultural facts about China.",
+      "vocabulary": [
+        "guide",
+        "recommend",
+        "famous",
+        "traditional",
+        "delicious",
+        "respect"
+      ],
+      "functional_language": [
+        "I recommend you visit...",
+        "You must try...",
+        "I suggest going to..."
+      ],
+      "topic": "A complete review of Chinese culture, covering food, tea, family, and landmarks.",
+      "lesson_task": "Role-play: The student acts as a cultural guide explaining Chinese traditions to the tutor, who plays a Saudi tourist planning a trip to China. The tutor should prompt the student to use vocabulary and phrases from L1-L9, asking follow-up questions such as 'What delicious food do you recommend? How do families show respect? What famous traditional places should I see?'"
+    }
+  ]
+}

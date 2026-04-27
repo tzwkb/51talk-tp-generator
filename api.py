@@ -5,6 +5,7 @@
 import asyncio
 import io
 import json
+import mimetypes
 import queue
 import threading
 import uuid
@@ -20,7 +21,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 import config
-from config import OUTPUT_DIR, LEVELS, client
+from config import LEVELS, client
 from content_processor import (
     generate_unit_outline,
     analyze_level,
@@ -41,7 +42,25 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.mount("/static/outputs", StaticFiles(directory=OUTPUT_DIR), name="outputs")
+# ── Middleware: serve /static/outputs before SPA mount catches it ──
+
+@app.middleware("http")
+async def static_outputs_middleware(request, call_next):
+    if request.url.path.startswith("/static/outputs/"):
+        rel = request.url.path[len("/static/outputs/"):]
+        base = Path(config.OUTPUT_DIR).resolve()
+        target = (base / rel).resolve()
+        try:
+            target.relative_to(base)
+        except ValueError:
+            from starlette.responses import Response
+            return Response("Access denied", status_code=403)
+        if not target.exists() or not target.is_file():
+            from starlette.responses import Response
+            return Response("Not found", status_code=404)
+        mime, _enc = mimetypes.guess_type(str(target))
+        return FileResponse(str(target), media_type=mime)
+    return await call_next(request)
 
 # ── Pydantic models ─────────────────────────────────────────
 
@@ -82,6 +101,7 @@ class SettingsUpdateRequest(BaseModel):
     ai_temperature: Optional[float] = None
     logo_text: Optional[str] = None
     logo_sub: Optional[str] = None
+    output_dir: Optional[str] = None
     output_html: Optional[bool] = None
     output_pdf: Optional[bool] = None
 
@@ -312,7 +332,7 @@ async def lesson_generate(req: LessonGenerateRequest):
             from sanitizer import sanitize_lesson
             from utils import safe_name
 
-            out = Path(OUTPUT_DIR)
+            out = Path(config.OUTPUT_DIR)
             out.mkdir(exist_ok=True)
             name = safe_name(req.blueprint)
 
@@ -360,7 +380,7 @@ async def lesson_generate(req: LessonGenerateRequest):
 
 @app.get("/api/units")
 async def list_units():
-    out = Path(OUTPUT_DIR)
+    out = Path(config.OUTPUT_DIR)
     if not out.exists():
         return []
 
@@ -402,7 +422,7 @@ async def list_units():
 
 @app.get("/api/units/{unit_id}/files")
 async def unit_files(unit_id: str):
-    unit_dir = Path(OUTPUT_DIR) / unit_id
+    unit_dir = Path(config.OUTPUT_DIR) / unit_id
     if not unit_dir.exists():
         raise HTTPException(status_code=404, detail="Unit not found")
 
@@ -440,6 +460,7 @@ async def get_settings():
         "ai_temperature": config.AI_TEMPERATURE,
         "logo_text": config.LOGO_TEXT,
         "logo_sub": config.LOGO_SUB,
+        "output_dir": config.OUTPUT_DIR,
         "output_html": config.OUTPUT_HTML,
         "output_pdf": config.OUTPUT_PDF,
     }
@@ -460,6 +481,8 @@ async def update_settings(req: SettingsUpdateRequest):
         config.LOGO_TEXT = req.logo_text
     if req.logo_sub is not None:
         config.LOGO_SUB = req.logo_sub
+    if req.output_dir is not None:
+        config.OUTPUT_DIR = req.output_dir
     if req.output_html is not None:
         config.OUTPUT_HTML = req.output_html
     if req.output_pdf is not None:

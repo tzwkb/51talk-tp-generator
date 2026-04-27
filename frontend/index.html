@@ -59,10 +59,7 @@
         <section class="bg-gradient-to-r from-primary-light to-card rounded-2xl p-8 mb-8 shadow-card flex items-center justify-between border border-border">
             <div class="max-w-xl">
                 <h1 data-i18n="hero_title" class="text-4xl font-bold mb-3 text-text-primary">Create AI-powered lesson materials in minutes</h1>
-                <p data-i18n="hero_sub" class="text-text-secondary text-lg mb-6">Seamlessly generate unit outlines, interactive slides, and printable PDFs.</p>
-                <button data-i18n="hero_cta" onclick="goWizard()" class="bg-primary hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-medium shadow-md transition-all hover:shadow-card-hover transform hover:-translate-y-0.5">
-                    + Create New Unit
-                </button>
+                <p data-i18n="hero_sub" class="text-text-secondary text-lg">Seamlessly generate unit outlines, interactive slides, and printable PDFs.</p>
             </div>
             <div class="hidden md:block w-48 h-48 bg-primary/5 rounded-full relative flex items-center justify-center">
                 <i class="ph-duotone ph-stack text-primary text-6xl"></i>
@@ -143,6 +140,10 @@
                 </div>
             </div>
             <div id="panel-output" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Output Directory</label>
+                    <input type="text" id="set-output-dir" class="w-full border border-border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none" placeholder="e.g. E:/51talk_automation/tp_generator/output">
+                </div>
                 <div class="flex items-center justify-between py-2">
                     <span class="text-sm font-medium">Export HTML</span>
                     <button onclick="toggleSwitch(this, 'export_html')" class="w-11 h-6 bg-gray-200 rounded-full relative transition-colors switch-btn" data-on="false">
@@ -197,12 +198,13 @@
                 
                 container.innerHTML = units.map(u => {
                     const badge = levelColors[u.level] || 'bg-gray-100 text-text-secondary';
+                    const cardClick = `onclick="window.location.href='/unit.html?id=${encodeURIComponent(u.id)}'"`;
                     const chips = (u.files || []).map(f => 
-                        `<span class="bg-gray-100 text-text-secondary text-[11px] px-2 py-1 rounded font-mono uppercase">${f.type}</span>`
+                        `<span onclick="event.stopPropagation(); window.open('${f.path}', '_blank')" class="cursor-pointer bg-gray-100 text-text-secondary text-[11px] px-2 py-1 rounded font-mono uppercase hover:bg-primary-light hover:text-primary transition-colors">${f.type}</span>`
                     ).join('');
                     
                     return `
-                    <div class="bg-card rounded-2xl p-6 border border-border shadow-card flex flex-col h-full hover:shadow-card-hover transition-shadow">
+                    <div ${cardClick} class="bg-card rounded-2xl p-6 border border-border shadow-card flex flex-col h-full hover:shadow-card-hover transition-shadow cursor-pointer">
                         <div class="flex justify-between items-start mb-4">
                             <span class="${badge} text-xs font-bold px-2 py-1 rounded-md">${u.level || '--'}</span>
                         </div>
@@ -280,6 +282,7 @@
                 document.getElementById('set-api-key').value = s.ai_api_key || '';
                 document.getElementById('set-temp').value = s.ai_temperature ?? 0.7;
                 document.getElementById('set-temp-val').innerText = s.ai_temperature ?? 0.7;
+                document.getElementById('set-output-dir').value = s.output_dir || '';
                 updateSwitchUI('export_html', s.output_html !== false);
                 updateSwitchUI('export_pdf', s.output_pdf !== false);
             } catch (e) { console.error('Failed to load settings', e); }
@@ -304,6 +307,7 @@
             const payload = {
                 ai_base_url: document.getElementById('set-base-url').value || null,
                 ai_temperature: parseFloat(document.getElementById('set-temp').value) || null,
+                output_dir: document.getElementById('set-output-dir').value || null,
                 output_html: document.querySelector('[onclick*="export_html"]').getAttribute('data-on') === 'true',
                 output_pdf: document.querySelector('[onclick*="export_pdf"]').getAttribute('data-on') === 'true',
             };

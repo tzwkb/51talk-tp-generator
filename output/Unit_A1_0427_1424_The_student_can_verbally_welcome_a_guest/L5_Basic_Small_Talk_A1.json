@@ -1,0 +1,129 @@
+[
+  {
+    "type": "title",
+    "unit": "The student can welcome a guest, introduce someone, make basic small talk, and politely offer a drink.",
+    "lesson": "Lesson 5: Basic Small Talk",
+    "objective": "Ask and answer simple questions about well-being.",
+    "emoji": "🎯"
+  },
+  {
+    "type": "warm_up",
+    "title": "Warm-up",
+    "subtitle": "Greeting friends",
+    "question": "What do you usually say when you see a friend or colleague?",
+    "starters": [
+      "When I see a friend, I usually say...",
+      "We usually talk about..."
+    ]
+  },
+  {
+    "type": "useful_language_1",
+    "title": "Useful Language (Part 1)",
+    "teacher_instructions": [
+      "Read each word aloud and ask the student to repeat after you.",
+      "Read the definition and the example sentence.",
+      "Ask the check question to ensure the student understands.",
+      "Ask the student to create their own sentence using the word."
+    ],
+    "words": [
+      {
+        "word": "fine",
+        "emoji": "😊",
+        "definition": "Feeling well or healthy.",
+        "example": "I'm fine, thank you.",
+        "check": "Which sentence means 'fine': A) I feel well, or B) I feel sick?"
+      },
+      {
+        "word": "good",
+        "emoji": "👍",
+        "definition": "Pleasant or positive.",
+        "example": "It's a good day today.",
+        "check": "When would you say you're 'good': A) when you are happy, or B) when you are sad?"
+      }
+    ]
+  },
+  {
+    "type": "useful_language_2",
+    "title": "Useful Language (Part 2)",
+    "teacher_instructions": [
+      "Read each word aloud and ask the student to repeat.",
+      "Read the definition and example sentence.",
+      "Ask the check question to confirm understanding.",
+      "Ask the student to make their own sentence using one of the words."
+    ],
+    "words": [
+      {
+        "word": "how",
+        "emoji": "❓",
+        "definition": "A word used to ask a question.",
+        "example": "How are you?",
+        "check": "Which question asks about a person's feelings: A) How are you? or B) What are you?"
+      },
+      {
+        "word": "today",
+        "emoji": "📅",
+        "definition": "The present day.",
+        "example": "I am fine today.",
+        "check": "Which word means the present day: A) today or B) tomorrow?"
+      }
+    ]
+  },
+  {
+    "type": "conversation_builder",
+    "title": "Conversation Builder",
+    "goal": "Greet your tutor and ask how they are.",
+    "linkers": [
+      {
+        "word": "How are you?",
+        "use": "Ask how the other person is doing."
+      },
+      {
+        "word": "I am fine.",
+        "use": "Answer the question."
+      },
+      {
+        "word": "And you?",
+        "use": "Return the question."
+      }
+    ],
+    "model": "Tutor: Hello! How are you today?\nStudent: I am fine, thanks. And you?\nTutor: I am good, thanks for asking.",
+    "your_turn": {
+      "teacher": "Greet the student and ask how they are today.",
+      "student": "Answer the tutor, then return the question."
+    }
+  },
+  {
+    "type": "practice",
+    "title": "Let's practice",
+    "teacher_question": "Imagine we're at the office and I'm your colleague. Ask me how I am, answer my question, and introduce someone to me. Use the prompts below to help you.",
+    "student_guide": [
+      "Hi, ___ are you ___?",
+      "I'm ___, thanks. And ___?",
+      "Oh, this is my ___."
+    ]
+  },
+  {
+    "type": "scenario",
+    "title": "Real-world scenario",
+    "role_a": "Student: You are at the office and see your colleague.",
+    "role_b": "Tutor: You are the student's colleague.",
+    "problem": "You want to say hello and introduce your friend to your colleague.",
+    "mission": [
+      "Greet your colleague and ask, 'How are you today?'",
+      "Respond to your colleague's answer.",
+      "Introduce your friend to your colleague."
+    ],
+    "start": "Tutor: Oh, hi! It's great to see you today."
+  },
+  {
+    "type": "wrap_up",
+    "title": "Wrap-Up",
+    "recap": [
+      "Vocabulary: fine, good, how, today",
+      "Phrases: How are you? / I am fine. / And you?",
+      "Skill: Ask and answer simple questions about how someone is doing."
+    ],
+    "final_task": "Use one of today's phrases to ask your tutor how they are doing.",
+    "challenge": "Say 'How are you?' to a colleague or friend in English today."
+  }
+]

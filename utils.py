@@ -7,13 +7,13 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-from config import OUTPUT_DIR
+import config
 from i18n import _
 
 
 # ── Shared constants ──────────────────────────────────────
 
-DEBUG_DIR = Path(OUTPUT_DIR) / "_debug"
+DEBUG_DIR = Path(config.OUTPUT_DIR) / "_debug"
 
 
 # ── Text helpers ──────────────────────────────────────────
@@ -61,7 +61,7 @@ def create_unit_dir(outline: dict, level: str) -> Path:
         outline.get("unit_name") or outline.get("overarching_objective", "Unit")
     )
     timestamp = datetime.now().strftime("%m%d_%H%M")
-    unit_dir = Path(OUTPUT_DIR) / f"Unit_{level}_{timestamp}_{unit_name_safe}"
+    unit_dir = Path(config.OUTPUT_DIR) / f"Unit_{level}_{timestamp}_{unit_name_safe}"
     unit_dir.mkdir(parents=True, exist_ok=True)
     return unit_dir
 

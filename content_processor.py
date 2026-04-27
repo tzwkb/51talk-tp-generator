@@ -10,7 +10,7 @@ from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 
 import config
-from config import OUTPUT_DIR, client
+from config import client
 from i18n import _
 
 _RE_VOCAB = re.compile(r'[Vv]ocabulary[:\s]+([^\n]+)')
@@ -160,45 +160,6 @@ def generate_outline(level: str, blueprint_str: str, max_retries: int = 3) -> li
             '    {"type": "useful_language_2",   "key_points": ["word3", "word4"]},\n'
         )
 
-
-# ── CEFR 级别分析（自然语言 → AI 推荐）──────────────────────
-
-def analyze_level(user_desc: str) -> tuple[str, str]:
-    """让 AI 根据用户自然语言描述判断 CEFR 级别。
-    Returns: (level, reason)
-    """
-    prompt = f"""You are a CEFR level assessment expert for English language teaching.
-Analyze the user's requirement and pick exactly one level from A1, A2, B1, B2, C1.
-
-User description:
-{user_desc}
-
-Respond ONLY in this format:
-LEVEL: <A1|A2|B1|B2|C1>
-REASON: <one-sentence explanation in Chinese>
-
-Guidelines:
-- A1: absolute beginner; greetings, daily routines, very basic phrases
-- A2: elementary; simple routine tasks, past events, simple directions
-- B1: intermediate; travel situations, experiences/ambitions, give reasons
-- B2: upper-intermediate; fluent interaction, complex topics, detailed text
-- C1: advanced; flexible use for social/academic/professional purposes
-"""
-    response = client.chat.completions.create(
-        model=config.AI_MODEL,
-        messages=[{"role": "user", "content": prompt}],
-        temperature=0.3,
-        max_tokens=256,
-    )
-    content = response.choices[0].message.content.strip()
-
-    level_match = re.search(r'LEVEL:\s*(A1|A2|B1|B2|C1)', content, re.IGNORECASE)
-    reason_match = re.search(r'REASON:\s*(.+)', content, re.IGNORECASE)
-
-    level = level_match.group(1).upper() if level_match else "B1"
-    reason = reason_match.group(1).strip() if reason_match else "Default selection"
-    return level, reason
-
     if _funcs:
         cb_schema = f'    {{"type": "conversation_builder","key_points": {json.dumps(_funcs)}}},\n'
     else:
@@ -231,7 +192,7 @@ CRITICAL:
 - Fill in the "..." and placeholder fields (title, warm_up question, practice topic, scenario roles, etc.) based on the blueprint.
 """
 
-    debug_dir = Path(OUTPUT_DIR) / "_debug"
+    debug_dir = Path(config.OUTPUT_DIR) / "_debug"
     debug_dir.mkdir(parents=True, exist_ok=True)
 
     for attempt in range(max_retries):
@@ -277,10 +238,52 @@ CRITICAL:
                 raise
 
 
+# ── CEFR 级别分析（自然语言 → AI 推荐）──────────────────────
+
+def analyze_level(user_desc: str) -> tuple[str, str]:
+    """让 AI 根据用户自然语言描述判断 CEFR 级别。
+    Returns: (level, reason)
+    """
+    prompt = f"""You are a CEFR level assessment expert for English language teaching.
+Analyze the user's requirement and pick exactly one level from A1, A2, B1, B2, C1.
+
+User description:
+{user_desc}
+
+Respond ONLY in this format:
+LEVEL: <A1|A2|B1|B2|C1>
+REASON: <one-sentence explanation in Chinese>
+
+Guidelines:
+- A1: absolute beginner; greetings, daily routines, very basic phrases
+- A2: elementary; simple routine tasks, past events, simple directions
+- B1: intermediate; travel situations, experiences/ambitions, give reasons
+- B2: upper-intermediate; fluent interaction, complex topics, detailed text
+- C1: advanced; flexible use for social/academic/professional purposes
+"""
+    response = client.chat.completions.create(
+        model=config.AI_MODEL,
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.3,
+        max_tokens=256,
+    )
+    content = response.choices[0].message.content.strip()
+
+    level_match = re.search(r'LEVEL:\s*(A1|A2|B1|B2|C1)', content, re.IGNORECASE)
+    reason_match = re.search(r'REASON:\s*(.+)', content, re.IGNORECASE)
+
+    level = level_match.group(1).upper() if level_match else "B1"
+    reason = reason_match.group(1).strip() if reason_match else "Default selection"
+    return level, reason
+
+
 # ── 幻灯片内容生成 ─────────────────────────────────────────
 
 def generate_slide_content(level: str, slide_meta: dict, blueprint_str: str, context: str, unit: dict = None, bp_fields: dict = None, max_retries: int = 3) -> dict:
-    slide_type = slide_meta["type"]
+    slide_type = slide_meta.get("type", "")
+    if not slide_type:
+        print(_("warn_slide_meta_no_type", meta=slide_meta))
+        return {"type": "unknown", "error": "Missing type field in slide_meta", "raw": slide_meta}
     template = SLIDE_CONTENT_TEMPLATES.get(slide_type, "")
     design_rule = LEVEL_DESIGN_RULES.get(level, "")
 
@@ -540,7 +543,7 @@ def _fix_outline_key_points(outline: list[dict], vocab: list[str], funcs: list[s
             old = slide.get("key_points", [])
             slide["key_points"] = assigned
             if old != assigned:
-                print(_("vocab_fix", stype=slide['type'], old=old, new=assigned))
+                print(_("vocab_fix", stype=slide.get('type',''), old=old, new=assigned))
     for slide in outline:
         if slide.get("type") == "conversation_builder" and funcs:
             old = slide.get("key_points", [])
@@ -613,9 +616,13 @@ def generate_all_slides(level: str, blueprint: str | dict, unit: dict = None) ->
 
     def _gen(i, meta):
         try:
-            print(_("generating_slide", i=i+1, total=len(outline), stype=meta['type']))
+            stype = meta.get("type", "")
+            if not stype:
+                print(_("warn_slide_missing_type", i=i+1, meta=meta))
+                return i, {"type": "unknown", "error": "Missing type field", "raw": meta}, None
+            print(_("generating_slide", i=i+1, total=len(outline), stype=stype))
             # Title slide: build directly from blueprint metadata — NEVER trust AI slide-level outline
-            if meta["type"] == "title":
+            if stype == "title":
                 title_slide = {
                     "type": "title",
                     "unit": bp_fields.get("unit_name", ""),
@@ -630,7 +637,7 @@ def generate_all_slides(level: str, blueprint: str | dict, unit: dict = None) ->
             return i, None, e
 
     with ThreadPoolExecutor(max_workers=_PARALLEL_WORKERS) as executor:
-        for i, slide, _ in [f.result() for f in [executor.submit(_gen, i, m) for i, m in enumerate(outline)]]:
+        for i, slide, _unused in [f.result() for f in [executor.submit(_gen, i, m) for i, m in enumerate(outline)]]:
             if slide:
                 slides[i] = slide
             else:
@@ -640,7 +647,11 @@ def generate_all_slides(level: str, blueprint: str | dict, unit: dict = None) ->
         print(_("retrying_failed", n=len(failed_indices)))
         for i in failed_indices:
             meta = outline[i]
-            print(_("retry_slide", i=i+1, total=len(outline), stype=meta['type']))
+            stype = meta.get("type", "")
+            if not stype:
+                print(_("warn_skip_retry_no_type", i=i+1))
+                continue
+            print(_("retry_slide", i=i+1, total=len(outline), stype=stype))
             try:
                 slides[i] = generate_slide_content(level, meta, blueprint_str, blueprint_str, bp_fields=bp_fields, max_retries=3)
                 print(_("retry_ok"))
@@ -648,9 +659,9 @@ def generate_all_slides(level: str, blueprint: str | dict, unit: dict = None) ->
                 print(_("retry_error", e=e))
 
     # ── Check for permanently failed slides ──
-    permanently_failed = [(i, outline[i]['type']) for i in range(len(outline)) if slides[i] is None]
+    permanently_failed = [(i, outline[i].get('type','UNKNOWN')) for i in range(len(outline)) if slides[i] is None]
     if permanently_failed:
-        failed_types = [t for _, t in permanently_failed]
+        failed_types = [t for _unused, t in permanently_failed]
         # Critical modules that cannot be missing
         critical_types = {"useful_language_1", "conversation_builder", "practice", "scenario", "wrap_up"}
         missing_critical = [t for t in failed_types if t in critical_types]
@@ -666,10 +677,11 @@ def generate_all_slides(level: str, blueprint: str | dict, unit: dict = None) ->
 
     # Force-correct slide titles — AI may rename slides regardless of TITLE LOCK prompt.
     for slide in slides:
-        if slide and slide.get("type") in TITLE_MAP:
-            correct_title = TITLE_MAP[slide["type"]]
+        stype = slide.get("type") if slide else None
+        if stype and stype in TITLE_MAP:
+            correct_title = TITLE_MAP[stype]
             if slide.get("title") != correct_title:
-                print(_("title_fix", stype=slide['type'], old=slide.get('title'), new=correct_title))
+                print(_("title_fix", stype=stype, old=slide.get('title'), new=correct_title))
                 slide["title"] = correct_title
 
     final_slides = [s for s in slides if s is not None]
@@ -677,7 +689,8 @@ def generate_all_slides(level: str, blueprint: str | dict, unit: dict = None) ->
     expected_count = len(outline)
     actual_count = len(final_slides)
     if actual_count < expected_count:
-        print(_("warn_missing_slides", actual=actual_count, expected=expected_count, types=[outline[i]['type'] for i in range(len(outline)) if slides[i] is None]))
+        missing_types = [outline[i].get('type', 'UNKNOWN') for i in range(len(outline)) if slides[i] is None]
+        print(_("warn_missing_slides", actual=actual_count, expected=expected_count, types=missing_types))
     return final_slides
 
 
@@ -782,7 +795,7 @@ def generate_unit_outline(messages: list[dict], level: str) -> dict:
     print(_("generating_outline_json"))
     gen_messages = messages + [{"role": "user", "content": UNIT_OUTLINE_INSTRUCTION}]
 
-    debug_dir = Path(OUTPUT_DIR) / "_debug"
+    debug_dir = Path(config.OUTPUT_DIR) / "_debug"
     debug_dir.mkdir(parents=True, exist_ok=True)
     with open(debug_dir / "unit_chat_history.json", "w", encoding="utf-8") as f:
         json.dump(gen_messages, f, ensure_ascii=False, indent=2)
@@ -793,7 +806,7 @@ def generate_unit_outline(messages: list[dict], level: str) -> dict:
     for _attempt in range(3):
         try:
             response = client.chat.completions.create(
-                model=config.AI_MODEL, messages=gen_messages, temperature=0.7, max_tokens=4096,
+                model=config.AI_MODEL, messages=gen_messages, temperature=0.7, max_tokens=8192,
             )
             raw = response.choices[0].message.content.strip()
         except Exception as e:
@@ -817,7 +830,7 @@ def generate_unit_outline(messages: list[dict], level: str) -> dict:
             # Try to extract the first complete JSON object (handles trailing text)
             try:
                 decoder = json.JSONDecoder()
-                outline, _ = decoder.raw_decode(raw_clean.strip())
+                outline, _idx = decoder.raw_decode(raw_clean.strip())
                 break  # success
             except json.JSONDecodeError as e2:
                 if _attempt < 2:

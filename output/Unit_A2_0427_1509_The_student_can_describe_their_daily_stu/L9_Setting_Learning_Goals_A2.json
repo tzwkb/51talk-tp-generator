@@ -1,0 +1,136 @@
+[
+  {
+    "type": "title",
+    "unit": "Students can describe their daily study routines, discuss learning tools, and share advice for building good study habits while balancing school and family life.",
+    "lesson": "Lesson 9: Setting Learning Goals",
+    "objective": "Talk about what you want to achieve in your studies.",
+    "emoji": "🎯"
+  },
+  {
+    "type": "warm_up",
+    "title": "Warm-up",
+    "subtitle": "Let's talk about your goals.",
+    "question": "What is one subject or skill you want to practice to get better grades this year?",
+    "starters": [
+      "I want to practice...",
+      "My goal is to get better grades in..."
+    ]
+  },
+  {
+    "type": "useful_language_1",
+    "title": "Useful language (Part 1)",
+    "teacher_instructions": [
+      "Read each word aloud and ask the student to repeat it.",
+      "Read the definition and example sentence.",
+      "Ask the check question to confirm understanding.",
+      "Ask the student to make a sentence using one of the words."
+    ],
+    "words": [
+      {
+        "word": "improve",
+        "emoji": "📈",
+        "definition": "To make something better.",
+        "example": "I want to improve my English grades this year.",
+        "check": "If you improve your grades, do they go up or down?"
+      },
+      {
+        "word": "learn",
+        "emoji": "📖",
+        "definition": "To gain new knowledge or skills.",
+        "example": "My goal is to learn how to use this new software.",
+        "check": "Where do you usually learn new study skills: in a classroom or at a restaurant?"
+      }
+    ]
+  },
+  {
+    "type": "useful_language_2",
+    "title": "Useful Language (Part 2)",
+    "teacher_instructions": [
+      "Read each word aloud and ask the student to repeat after you.",
+      "Read the definitions and example sentences.",
+      "Ask the check questions to confirm understanding.",
+      "Ask the student to make their own sentence using one of the words."
+    ],
+    "words": [
+      {
+        "word": "goal",
+        "emoji": "🎯",
+        "definition": "Something you want to do or achieve in the future.",
+        "example": "My goal is to speak English well this year.",
+        "check": "Which of these is a goal: eating lunch right now or finishing a big project next month?"
+      },
+      {
+        "word": "grade",
+        "emoji": "📝",
+        "definition": "A number or letter that shows how well you did on a test or in a class.",
+        "example": "I want to get a good grade on my math test.",
+        "check": "If you do very well on a test, will your grade be high or low?"
+      },
+      {
+        "word": "skill",
+        "emoji": "🛠️",
+        "definition": "The ability to do something well because you have practiced it.",
+        "example": "Coding is a very useful skill for my job.",
+        "check": "Which of these is a skill: having brown eyes or playing the piano?"
+      }
+    ]
+  },
+  {
+    "type": "conversation_builder",
+    "title": "Conversation Builder",
+    "goal": "Talk about your learning goals.",
+    "linkers": [
+      {
+        "word": "I want to...",
+        "use": "To express a wish."
+      },
+      {
+        "word": "I hope to...",
+        "use": "To express a future wish."
+      },
+      {
+        "word": "My goal is to...",
+        "use": "To state a specific plan."
+      }
+    ],
+    "model": "Tutor: So, what do you want to learn this year?\nStudent: Well, I want to learn a new computer skill.\nTutor: That's a great idea! How are you planning to do that?\nStudent: I hope to practice every day. My goal is to improve my grades.",
+    "your_turn": {
+      "teacher": "Ask the student: What is your learning goal for this year? How do you plan to achieve it?",
+      "student": "Answer your tutor using: I want to... / I hope to... / My goal is to..."
+    }
+  },
+  {
+    "type": "practice",
+    "title": "Let's practice",
+    "teacher_question": "Imagine it's the start of the new school year, and I'm your mentor. Tell me about your goals for practicing and getting better grades in subjects like math, English, or science. Use the sentence frames below to share your ideas.",
+    "student_guide": [
+      "My goal is to improve my _____ grade.",
+      "I want to practice _____ every week.",
+      "I hope to learn a new skill, like _____."
+    ]
+  },
+  {
+    "type": "scenario",
+    "title": "Real-world scenario",
+    "role_a": "Student",
+    "role_b": "Tutor (acting as a mentor)",
+    "problem": "You want to improve your grades and learn new skills for the upcoming school year.",
+    "mission": [
+      "Share three learning goals with your tutor.",
+      "Use phrases like: I want to, I hope to, or My goal is to.",
+      "Explain how you plan to achieve these goals."
+    ],
+    "start": "Hi there! A new school year is starting soon. So, what are your three main learning goals?"
+  },
+  {
+    "type": "wrap_up",
+    "title": "Wrap-Up",
+    "recap": [
+      "Vocabulary: improve, learn, goal, grade, skill",
+      "Target phrases: I want to... / I hope to... / My goal is to...",
+      "Skill: Talk about what you want to achieve in your studies."
+    ],
+    "final_task": "Use one of today's phrases to share one goal you have for your English skills next month.",
+    "challenge": "Before our next class, think of one new skill you want to learn this year and write a sentence about it using 'My goal is to...'."
+  }
+]

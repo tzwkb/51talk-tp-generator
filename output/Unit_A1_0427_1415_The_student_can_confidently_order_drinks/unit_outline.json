@@ -1,0 +1,115 @@
+{
+  "level": "A1",
+  "total_lessons": 6,
+  "overarching_objective": "The student can confidently order drinks and snacks, ask for prices, and pay at a coffee shop.",
+  "final_task": "A full role-play of a café visit where the student orders multiple items, asks for the total price, and pays the tutor, who acts as the barista.",
+  "lessons": [
+    {
+      "lesson_number": 1,
+      "lesson_name": "Hot Drinks and Sizes",
+      "objective": "Identify common hot drinks and specify the size.",
+      "vocabulary": [
+        "Arabic coffee",
+        "tea",
+        "espresso",
+        "small",
+        "large"
+      ],
+      "functional_language": [
+        "I want a...",
+        "I would like a..."
+      ],
+      "topic": "Talking about favorite hot drinks.",
+      "lesson_task": "Role-play: The tutor acts as a barista and asks what the student wants. The student verbally orders a hot drink and specifies the size."
+    },
+    {
+      "lesson_number": 2,
+      "lesson_name": "Cold Drinks and Extras",
+      "objective": "Order cold drinks and request additions like sugar or milk.",
+      "vocabulary": [
+        "water",
+        "iced coffee",
+        "milk",
+        "sugar",
+        "ice"
+      ],
+      "functional_language": [
+        "With milk, please.",
+        "No sugar, please."
+      ],
+      "topic": "Choosing cold drinks for hot days.",
+      "lesson_task": "Role-play: The student orders a cold drink. The tutor, acting as the barista, asks if the student wants ice, milk, or sugar. The student verbally replies with their preferences."
+    },
+    {
+      "lesson_number": 3,
+      "lesson_name": "Ordering Snacks",
+      "objective": "Order common café snacks to eat with a drink.",
+      "vocabulary": [
+        "dates",
+        "cake",
+        "croissant",
+        "sandwich"
+      ],
+      "functional_language": [
+        "Do you have...?",
+        "I'll take a..."
+      ],
+      "topic": "Pairing snacks with Arabic coffee.",
+      "lesson_task": "Role-play: The student asks the tutor (barista) if they have specific snacks available. The tutor says yes or no, and the student verbally chooses one to order."
+    },
+    {
+      "lesson_number": 4,
+      "lesson_name": "Asking About Prices",
+      "objective": "Understand and ask about prices in Saudi Riyals.",
+      "vocabulary": [
+        "riyal",
+        "twenty",
+        "thirty",
+        "forty",
+        "fifty"
+      ],
+      "functional_language": [
+        "How much is it?",
+        "How much is the..."
+      ],
+      "topic": "Asking about the price of an iced coffee and snacks.",
+      "lesson_task": "Role-play: The student verbally asks the tutor for the prices of different drinks and snacks. The tutor gives the price, and the student repeats the number to confirm."
+    },
+    {
+      "lesson_number": 5,
+      "lesson_name": "Paying the Bill",
+      "objective": "Complete the payment process at the café counter.",
+      "vocabulary": [
+        "card",
+        "cash",
+        "receipt",
+        "total"
+      ],
+      "functional_language": [
+        "Can I pay by card?",
+        "Here you go."
+      ],
+      "topic": "Buying a cake and paying for it.",
+      "lesson_task": "Role-play: The tutor tells the student the total price. The student verbally chooses a payment method (cash or card), offers the payment, and asks for the receipt."
+    },
+    {
+      "lesson_number": 6,
+      "lesson_name": "The Full Café Experience",
+      "objective": "Order drinks and snacks, ask for the price, and complete the payment.",
+      "vocabulary": [
+        "Arabic coffee",
+        "dates",
+        "riyal",
+        "card",
+        "order",
+        "enjoy"
+      ],
+      "functional_language": [
+        "That's all, thank you.",
+        "Yes, that is correct."
+      ],
+      "topic": "A complete visit to a local coffee shop.",
+      "lesson_task": "A full role-play of a café visit where the student orders multiple items, asks for the total price, and pays the tutor, who acts as the barista. The tutor must prompt the student to use vocabulary and phrases from L1-L5 by asking follow-up questions such as 'What size?', 'With milk or sugar?', and 'Cash or card?'."
+    }
+  ]
+}

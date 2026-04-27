@@ -1,0 +1,144 @@
+[
+  {
+    "type": "title",
+    "unit": "Students can describe their daily study routines, discuss learning tools, and share advice for building good study habits while balancing school and family life.",
+    "lesson": "Lesson 10: My perfect study plan",
+    "objective": "Present a complete and healthy study routine.",
+    "emoji": "🎯"
+  },
+  {
+    "type": "warm_up",
+    "title": "Warm Up",
+    "subtitle": "Let's talk about study habits.",
+    "question": "What do you usually do to stay focused and get your homework done at home?",
+    "starters": [
+      "When I need to study, I usually...",
+      "To stay focused, I always..."
+    ]
+  },
+  {
+    "type": "useful_language_1",
+    "title": "Useful language (Part 1)",
+    "teacher_instructions": [
+      "Read each word aloud and ask the student to repeat it.",
+      "Read the definition and example sentence for each word.",
+      "Ask the check question to confirm their understanding.",
+      "Ask the student to make their own sentence using one of the words."
+    ],
+    "words": [
+      {
+        "word": "habit",
+        "emoji": "🔁",
+        "definition": "something you do regularly, often without thinking",
+        "example": "Reading a book before bed is a good habit.",
+        "check": "Which is a good study habit: checking your phone often or reviewing your notes?"
+      },
+      {
+        "word": "routine",
+        "emoji": "📅",
+        "definition": "your usual way of doing things in a specific order",
+        "example": "My morning routine includes waking up, eating breakfast, and walking to school.",
+        "check": "What is the first thing you do in your morning routine?"
+      },
+      {
+        "word": "focus",
+        "emoji": "🎯",
+        "definition": "to give all your attention to one specific thing",
+        "example": "I need a quiet room so I can focus on my homework.",
+        "check": "Where is it easier to focus: in a noisy room or in a quiet library?"
+      }
+    ]
+  },
+  {
+    "type": "useful_language_2",
+    "title": "Useful Language (Part 2)",
+    "teacher_instructions": [
+      "Read each word aloud and ask the student to repeat it.",
+      "Read the definition and example sentence for each word.",
+      "Ask the check questions to confirm understanding.",
+      "Ask the student to make their own sentence using one of the words."
+    ],
+    "words": [
+      {
+        "word": "improve",
+        "emoji": "📈",
+        "definition": "to make something better",
+        "example": "I study every day to improve my English.",
+        "check": "If you improve your test score, does it go up or down?"
+      },
+      {
+        "word": "do homework",
+        "emoji": "📚",
+        "definition": "to complete schoolwork at home",
+        "example": "I always do my homework in a quiet room.",
+        "check": "Do you usually do your homework before or after dinner?"
+      },
+      {
+        "word": "take a break",
+        "emoji": "🛋️",
+        "definition": "to stop working for a short time to rest",
+        "example": "I like to take a break and go outside for ten minutes.",
+        "check": "When you take a break, do you keep studying or do you rest?"
+      }
+    ]
+  },
+  {
+    "type": "conversation_builder",
+    "title": "Conversation Builder",
+    "goal": "Learn how to finish your talk and give advice on your study routine.",
+    "linkers": [
+      {
+        "word": "To sum up...",
+        "use": "to briefly summarize your main points"
+      },
+      {
+        "word": "In conclusion...",
+        "use": "to formally end your talk"
+      },
+      {
+        "word": "The best way is to...",
+        "use": "to share your top piece of advice"
+      }
+    ],
+    "model": "Well, I always do my homework early and take frequent breaks. To sum up, this routine really helps me improve. The best way is to find a quiet room where you can focus.",
+    "your_turn": {
+      "teacher": "Ask the student: What is the secret to building good study habits?",
+      "student": "Answer the teacher. End your response using 'In conclusion...' or 'The best way is to...'."
+    }
+  },
+  {
+    "type": "practice",
+    "title": "Let's practice",
+    "teacher_question": "Imagine I'm your friend. I want to build a better study routine so I can get my homework done and still spend time with my family. Give me some advice using the phrases below.",
+    "student_guide": [
+      "The best way to improve your focus is to ___.",
+      "A good study habit is to ___.",
+      "You should take a break when ___.",
+      "In conclusion, having a healthy routine is important because ___."
+    ]
+  },
+  {
+    "type": "scenario",
+    "title": "Real-world scenario",
+    "role_a": "A student with a new, healthy study routine.",
+    "role_b": "A mentor who wants to learn about the student's study habits.",
+    "problem": "You need to explain your new study routine to your mentor and give advice on balancing schoolwork, family time, and rest.",
+    "mission": [
+      "Explain your new habits for staying focused and completing homework effectively.",
+      "Share advice on how to balance schoolwork and family time.",
+      "Answer questions about taking breaks, managing weekends, and dealing with noisy rooms."
+    ],
+    "start": "Hi there! I'd love to hear about your new study routine. So, how do you plan your day to improve your focus?"
+  },
+  {
+    "type": "wrap_up",
+    "title": "Wrap-up",
+    "recap": [
+      "Vocabulary: habit, routine, focus, improve, do homework, take a break",
+      "Chunks: To sum up... / In conclusion... / The best way is to...",
+      "Skill: Presenting a complete and healthy study routine."
+    ],
+    "final_task": "In one sentence, use a phrase like 'In conclusion...' to share your best advice for building a good study habit.",
+    "challenge": "Write down your ideal weekend schedule using at least three of today's vocabulary words."
+  }
+]

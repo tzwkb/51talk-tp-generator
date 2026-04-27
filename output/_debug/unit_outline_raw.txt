@@ -1,0 +1,197 @@
+{
+  "level": "A2",
+  "total_lessons": 10,
+  "overarching_objective": "The student can describe their daily study routines, discuss learning tools, and share advice for building good study habits while balancing school and family life.",
+  "final_task": "A role-play where the student explains their new, improved study routine to the tutor (acting as a mentor), giving advice on how to balance schoolwork, family time, and rest.",
+  "lessons": [
+    {
+      "lesson_number": 1,
+      "lesson_name": "My Daily Study Routine",
+      "objective": "Describe everyday study habits after school.",
+      "vocabulary": [
+        "do homework",
+        "take a break",
+        "review notes",
+        "finish school"
+      ],
+      "functional_language": [
+        "First, I...",
+        "After that, I...",
+        "Then, I usually..."
+      ],
+      "topic": "Talking about what you do every afternoon to study.",
+      "lesson_task": "The student verbally describes their typical afternoon routine to the tutor. The tutor will ask follow-up questions about what time the student does each activity."
+    },
+    {
+      "lesson_number": 2,
+      "lesson_name": "Tools for Learning",
+      "objective": "Identify and talk about items used for studying.",
+      "vocabulary": [
+        "textbook",
+        "notebook",
+        "dictionary",
+        "online search"
+      ],
+      "functional_language": [
+        "I use this to...",
+        "This helps me to...",
+        "I need a... for..."
+      ],
+      "topic": "Discussing the different tools needed for different school subjects.",
+      "lesson_task": "The tutor acts as a new student buying school supplies. The student must orally explain what tools they need and why they are useful."
+    },
+    {
+      "lesson_number": 3,
+      "lesson_name": "Managing Study Time",
+      "objective": "Talk about how often study activities happen.",
+      "vocabulary": [
+        "early",
+        "late",
+        "on time",
+        "schedule",
+        "calendar"
+      ],
+      "functional_language": [
+        "I always...",
+        "I sometimes...",
+        "I rarely..."
+      ],
+      "topic": "Creating a good schedule so you have time to take a break.",
+      "lesson_task": "The student and tutor verbally discuss a weekly school schedule. The tutor suggests studying very late, and the student must disagree and explain their own schedule."
+    },
+    {
+      "lesson_number": 4,
+      "lesson_name": "A Good Place to Study",
+      "objective": "Describe a quiet and comfortable study space at home.",
+      "vocabulary": [
+        "quiet",
+        "noisy",
+        "comfortable",
+        "desk",
+        "bright"
+      ],
+      "functional_language": [
+        "I prefer to study in...",
+        "I like studying at...",
+        "It is better to..."
+      ],
+      "topic": "Finding a comfortable place at home to open your textbook.",
+      "lesson_task": "The student describes their favorite place to study at home. The tutor will ask questions to find out if the room is too noisy or bright enough."
+    },
+    {
+      "lesson_number": 5,
+      "lesson_name": "Preparing for Exams",
+      "objective": "Discuss actions needed before a school test.",
+      "vocabulary": [
+        "pass",
+        "fail",
+        "practice",
+        "memorize",
+        "exam"
+      ],
+      "functional_language": [
+        "I have to...",
+        "I need to...",
+        "It is important to..."
+      ],
+      "topic": "How to memorize facts and review notes before a big test.",
+      "lesson_task": "The tutor plays a worried classmate who has an exam tomorrow. The student must give verbal advice on what they need to do to pass."
+    },
+    {
+      "lesson_number": 6,
+      "lesson_name": "Asking for Help",
+      "objective": "Ask teachers or family members for assistance with schoolwork.",
+      "vocabulary": [
+        "explain",
+        "understand",
+        "difficult",
+        "easy",
+        "repeat"
+      ],
+      "functional_language": [
+        "Can you help me with...",
+        "I don't understand...",
+        "Could you explain..."
+      ],
+      "topic": "Asking for help when an online search is not enough.",
+      "lesson_task": "Role-play: The student has a difficult homework assignment and must verbally ask the tutor (acting as an older brother or sister) to explain it to them."
+    },
+    {
+      "lesson_number": 7,
+      "lesson_name": "Dealing with Distractions",
+      "objective": "Identify things that interrupt studying and give advice on avoiding them.",
+      "vocabulary": [
+        "turn off",
+        "focus",
+        "video game",
+        "notification",
+        "screen"
+      ],
+      "functional_language": [
+        "You should...",
+        "You shouldn't...",
+        "It's a good idea to..."
+      ],
+      "topic": "How to focus when the house is noisy or the TV is on.",
+      "lesson_task": "The tutor complains that they cannot finish their homework because they keep playing a video game. The student must speak with them and give advice on how to focus."
+    },
+    {
+      "lesson_number": 8,
+      "lesson_name": "Balancing School and Family",
+      "objective": "Talk about making time for both studying and family gatherings.",
+      "vocabulary": [
+        "busy",
+        "free time",
+        "weekend",
+        "visit",
+        "relatives"
+      ],
+      "functional_language": [
+        "...because I have to...",
+        "...so I can...",
+        "...but I need to..."
+      ],
+      "topic": "Balancing your study schedule with visiting relatives.",
+      "lesson_task": "The tutor invites the student to a big family gathering on the weekend. The student must verbally negotiate the time because they are busy with homework."
+    },
+    {
+      "lesson_number": 9,
+      "lesson_name": "Setting Learning Goals",
+      "objective": "Talk about what they want to achieve in their studies.",
+      "vocabulary": [
+        "improve",
+        "learn",
+        "goal",
+        "grade",
+        "skill"
+      ],
+      "functional_language": [
+        "I want to...",
+        "I hope to...",
+        "My goal is to..."
+      ],
+      "topic": "Setting a goal to practice and improve your grades.",
+      "lesson_task": "The student verbally tells the tutor three learning goals for the new school year. The tutor will ask how the student plans to achieve them."
+    },
+    {
+      "lesson_number": 10,
+      "lesson_name": "My Perfect Study Plan",
+      "objective": "Present a complete and healthy study routine.",
+      "vocabulary": [
+        "habit",
+        "routine",
+        "focus",
+        "improve",
+        "do homework",
+        "take a break"
+      ],
+      "functional_language": [
+        "To sum up...",
+        "In conclusion...",
+        "The best way is to..."
+      ],
+      "topic": "Presenting a healthy routine to improve focus and do homework well.",
+      "lesson_task": "Final Task Simulation: The student role-plays explaining their new, improved study routine to the tutor (acting as a mentor). The student gives advice on balancing schoolwork and family time. The tutor should prompt the student to use vocabulary and phrases from L1-L9, asking follow-up questions such as 'How do you handle a noisy room?', 'When do you take a break?', and 'What is your schedule for the weekend?'"
+    }
+  ]
+}

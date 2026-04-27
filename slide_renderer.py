@@ -495,7 +495,7 @@ def export_pdf(html_path: str, pdf_path: str):
     try:
         from playwright.sync_api import sync_playwright
         with sync_playwright() as p:
-            browser = p.chromium.launch()
+            browser = p.chromium.launch(executable_path=r"C:\Program Files\Google\Chrome\Application\chrome.exe")
             page = browser.new_page()
             page.set_viewport_size({"width": 1920, "height": 1080})
             page.goto(f"file:///{html_path}")

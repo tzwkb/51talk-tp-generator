@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Files</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        primary: '#2563EB', 'primary-light': '#EFF6FF',
+                        success: '#059669', warning: '#D97706', error: '#DC2626',
+                        background: '#F8FAFC', card: '#FFFFFF',
+                        border: '#E2E8F0', 'text-secondary': '#64748B'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>body{background:#F8FAFC;}</style>
+</head>
+<body class="min-h-screen">
+    <div class="max-w-5xl mx-auto px-6 py-8">
+        <div class="flex items-center gap-3 mb-8">
+            <a href="/" class="text-text-secondary hover:text-primary transition-colors"><i class="ph ph-arrow-left text-xl"></i></a>
+            <h1 id="unit-title" class="text-2xl font-bold">Loading...</h1>
+        </div>
+
+        <div id="files-container" class="space-y-6">
+            <div class="text-center py-16"><i class="ph ph-spinner text-primary text-3xl animate-spin"></i></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+        const params = new URLSearchParams(window.location.search);
+        const unitId = params.get('id');
+
+        if (!unitId) {
+            document.getElementById('unit-title').textContent = 'Missing unit ID';
+            document.getElementById('files-container').innerHTML = '<div class="text-center text-error py-16">No unit ID provided in URL.</div>';
+        } else {
+            loadUnitFiles();
+        }
+
+        async function loadUnitFiles() {
+            const container = document.getElementById('files-container');
+            try {
+                const res = await fetch(`${API_BASE}/api/units/${encodeURIComponent(unitId)}/files`);
+                if (!res.ok) throw new Error(await res.text());
+                const data = await res.json();
+                document.getElementById('unit-title').textContent = data.unit_id;
+
+                const lessons = data.files.filter(f => f.name.match(/^L\d+_/));
+                const outline = data.files.filter(f => f.name === 'unit_outline.json');
+                const others = data.files.filter(f => !f.name.match(/^L\d+_/) && f.name !== 'unit_outline.json');
+
+                const iconMap = {
+                    json: 'ph-file-json', html: 'ph-file-html', pdf: 'ph-file-pdf',
+                    txt: 'ph-file-text', md: 'ph-file-text', unknown: 'ph-file'
+                };
+
+                function renderGroup(title, files) {
+                    if (!files.length) return '';
+                    const items = files.map(f => {
+                        const icon = iconMap[f.type] || 'ph-file';
+                        const isHtml = f.type === 'html';
+                        const btnClass = isHtml
+                            ? 'bg-primary text-white hover:bg-blue-700'
+                            : 'bg-white text-text-secondary border border-border hover:border-primary hover:text-primary';
+                        return `
+                        <a href="${f.path}" target="_blank" class="flex items-center gap-3 p-4 rounded-xl border border-border bg-card hover:shadow-md transition-shadow group">
+                            <div class="w-10 h-10 rounded-lg bg-primary-light flex items-center justify-center flex-shrink-0">
+                                <i class="ph ${icon} text-primary text-lg"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="font-medium text-sm truncate">${f.name}</p>
+                                <p class="text-text-secondary text-xs uppercase">${f.type}</p>
+                            </div>
+                            <span class="px-3 py-1.5 rounded-lg text-xs font-medium ${btnClass} transition-colors">
+                                ${isHtml ? 'View' : 'Open'}
+                            </span>
+                        </a>`;
+                    }).join('');
+                    return `
+                    <div>
+                        <h2 class="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-3">${title}</h2>
+                        <div class="grid gap-3">${items}</div>
+                    </div>`;
+                }
+
+                container.innerHTML = [
+                    renderGroup('Lessons', lessons),
+                    renderGroup('Unit Outline', outline),
+                    renderGroup('Other Files', others)
+                ].join('') || '<div class="text-center text-text-secondary py-16">No files found.</div>';
+
+            } catch (e) {
+                container.innerHTML = `<div class="text-center text-error py-16">Failed to load files: ${e.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>

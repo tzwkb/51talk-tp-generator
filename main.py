@@ -5,7 +5,8 @@
 import json
 from pathlib import Path
 
-from config import OUTPUT_DIR, LEVELS
+import config
+from config import LEVELS
 from content_processor import (
     generate_all_slides, polish_content,
     chat_unit_planning, generate_unit_outline, lesson_to_blueprint,
@@ -59,7 +60,7 @@ def run_single_lesson():
     print(_("title_single"))
     print("="*60)
 
-    level, _ = _select_level()
+    level, _unused = _select_level()
     if not level:
         return
 
@@ -70,7 +71,7 @@ def run_single_lesson():
         print(_("blueprint_empty"))
         return
 
-    out = Path(OUTPUT_DIR)
+    out = Path(config.OUTPUT_DIR)
     out.mkdir(exist_ok=True)
     name = safe_name(blueprint)
 

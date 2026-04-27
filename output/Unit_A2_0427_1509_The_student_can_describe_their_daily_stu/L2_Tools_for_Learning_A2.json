@@ -1,0 +1,129 @@
+[
+  {
+    "type": "title",
+    "unit": "Students can describe their daily study routines, discuss learning tools, and share advice on building good study habits while balancing school and family life.",
+    "lesson": "Lesson 2: Tools for learning",
+    "objective": "Identify and talk about items used for studying.",
+    "emoji": "🎯"
+  },
+  {
+    "type": "warm_up",
+    "title": "Warm up",
+    "subtitle": "Preparing to study",
+    "question": "What tools do you usually bring to class for different school subjects?",
+    "starters": [
+      "For English class, I always bring my...",
+      "When I go to the library, I need a..."
+    ]
+  },
+  {
+    "type": "useful_language_1",
+    "title": "Useful Language (Part 1)",
+    "teacher_instructions": [
+      "Read each word aloud and ask the student to repeat it.",
+      "Read the definition and example sentence.",
+      "Ask the check question to confirm understanding.",
+      "Ask the student to make their own sentence using one of the words."
+    ],
+    "words": [
+      {
+        "word": "textbook",
+        "emoji": "📚",
+        "definition": "A book used for studying a school subject.",
+        "example": "I need to read my history textbook for class tomorrow.",
+        "check": "Do you usually read a textbook for fun or for school?"
+      },
+      {
+        "word": "notebook",
+        "emoji": "📓",
+        "definition": "A book with blank pages used for writing notes.",
+        "example": "She takes all her math notes in a blue notebook.",
+        "check": "Do you use a pen or a keyboard to write in a notebook?"
+      }
+    ]
+  },
+  {
+    "type": "useful_language_2",
+    "title": "Useful Language (Part 2)",
+    "teacher_instructions": [
+      "Read each word aloud and ask the student to repeat it.",
+      "Read the definition and example sentence.",
+      "Ask the check question to confirm understanding.",
+      "Ask the student to make their own sentence using one of the words."
+    ],
+    "words": [
+      {
+        "word": "dictionary",
+        "emoji": "📖",
+        "definition": "A book or app that tells you the meanings of words.",
+        "example": "I use a dictionary to learn new English words.",
+        "check": "Which tool gives you the meanings of words: a notebook or a dictionary?"
+      },
+      {
+        "word": "online search",
+        "emoji": "🔍",
+        "definition": "Looking for information on the internet.",
+        "example": "Doing an online search helps me find quick answers for my homework.",
+        "check": "Do you do an online search using the internet or a piece of paper?"
+      }
+    ]
+  },
+  {
+    "type": "conversation_builder",
+    "title": "Conversation Builder",
+    "goal": "Learn how to explain why you need different study tools.",
+    "linkers": [
+      {
+        "word": "I use this to...",
+        "use": "Explain what you do with a tool."
+      },
+      {
+        "word": "This helps me to...",
+        "use": "Explain why a tool is useful."
+      },
+      {
+        "word": "I need a... for...",
+        "use": "Explain which tool you need for a specific subject."
+      }
+    ],
+    "model": "Tutor: So, what do you need for your English class?\nStudent: Well, I need a dictionary for English. This helps me to learn new words.\nTutor: Right. What about a notebook?\nStudent: I use this to write down my notes.",
+    "your_turn": {
+      "teacher": "Ask the student which tools they need for a science or math class.",
+      "student": "Answer using the new phrases and vocabulary words, such as 'textbook' or 'online search'."
+    }
+  },
+  {
+    "type": "practice",
+    "title": "Let's practice",
+    "teacher_question": "Imagine we have English, math, and history classes today. What tools do we need for these subjects? You can choose from a textbook, a notebook, a dictionary, or an online search. Use the sentence frames below to share your ideas.",
+    "student_guide": [
+      "I need a ___ for ___.",
+      "I use this to ___.",
+      "This helps me to ___."
+    ]
+  },
+  {
+    "type": "scenario",
+    "title": "Real-world scenario",
+    "role_a": "You are a new student. You are at the bookstore to buy school supplies, but you aren't sure exactly what you need.",
+    "role_b": "You are an experienced student. You are helping the new student choose the right study tools.",
+    "problem": "The new student doesn't know which study tools to buy for their classes.",
+    "mission": [
+      "Tell the new student which tools to buy.",
+      "Explain why they are useful.",
+      "Use: I need a... for... / I use this to... / This helps me to..."
+    ],
+    "start": "Hi there! I'm a new student here. Could you help me out? I'm not really sure what I need to buy for my classes."
+  },
+  {
+    "type": "wrap_up",
+    "title": "Wrap-Up",
+    "recap": [
+      "Vocabulary: textbook, notebook, dictionary, online search",
+      "Language chunks: I use this to... / This helps me to... / I need a... for...",
+      "Skill: Identifying and talking about items used for studying."
+    ],
+    "final_task": "Use one of today's phrases to answer the question: What do you use a dictionary for?",
+    "challenge": "Look around your room. Find three items and practice explaining what you use them for in English."
+  }
+]

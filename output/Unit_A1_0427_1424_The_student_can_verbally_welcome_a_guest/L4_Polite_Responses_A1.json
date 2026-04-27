@@ -1,0 +1,129 @@
+[
+  {
+    "type": "title",
+    "unit": "The student can welcome a guest, introduce someone, make basic small talk, and politely offer a drink.",
+    "lesson": "Lesson 4: Polite Responses",
+    "objective": "Accept or decline an offer politely.",
+    "emoji": "🎯"
+  },
+  {
+    "type": "warm_up",
+    "title": "Warm-up",
+    "subtitle": "Let's talk about drinks.",
+    "question": "When someone offers you a drink, do you usually choose coffee or tea?",
+    "starters": [
+      "I usually choose...",
+      "Actually, I don't drink coffee or tea. I prefer..."
+    ]
+  },
+  {
+    "type": "useful_language_1",
+    "title": "Useful Language (Part 1)",
+    "teacher_instructions": [
+      "Read each word aloud and ask the student to repeat after you.",
+      "Read the definition and the example sentence.",
+      "Ask the check question to confirm understanding.",
+      "Ask the student to make their own sentence using one of the words."
+    ],
+    "words": [
+      {
+        "word": "yes",
+        "emoji": "👍",
+        "definition": "Used to accept an offer or agree to something.",
+        "example": "Yes, I would like some tea.",
+        "check": "If your friend offers you some water and you want it, do you say 'yes' or 'no'?"
+      },
+      {
+        "word": "please",
+        "emoji": "🙏",
+        "definition": "Used to be polite when making a request or accepting an offer.",
+        "example": "Yes, please. I would love some.",
+        "check": "Which is more polite: 'Water!' or 'Water, please'?"
+      }
+    ]
+  },
+  {
+    "type": "useful_language_2",
+    "title": "Useful Language (Part 2)",
+    "teacher_instructions": [
+      "Read each word aloud and ask the student to repeat.",
+      "Read the definition and example sentence.",
+      "Ask the check question to confirm understanding.",
+      "Ask the student to make their own sentence using one of the words."
+    ],
+    "words": [
+      {
+        "word": "no",
+        "emoji": "❌",
+        "definition": "A word used to say that you do not want something.",
+        "example": "No, I don't want any coffee.",
+        "check": "If you aren't thirsty and someone offers you water, do you say yes or no?"
+      },
+      {
+        "word": "thank you",
+        "emoji": "🙏",
+        "definition": "A polite phrase used when someone helps you or offers you something.",
+        "example": "No, thank you.",
+        "check": "Do you say thank you to be polite or to be angry?"
+      }
+    ]
+  },
+  {
+    "type": "conversation_builder",
+    "title": "Conversation Builder",
+    "goal": "Accept or decline an offer politely.",
+    "linkers": [
+      {
+        "word": "Yes, please.",
+        "use": "To say yes to a drink."
+      },
+      {
+        "word": "No, thank you.",
+        "use": "To politely say no."
+      },
+      {
+        "word": "Just water, please.",
+        "use": "To ask for water instead."
+      }
+    ],
+    "model": "Tutor: Would you like some coffee?\nStudent: Yes, please.\n\nTutor: How about some tea?\nStudent: No, thank you. Just water, please.",
+    "your_turn": {
+      "teacher": "Offer the student coffee or tea. Practice three times so they can use all the phrases.",
+      "student": "Listen to your tutor. Reply with 'Yes, please,' 'No, thank you,' or 'Just water, please.'"
+    }
+  },
+  {
+    "type": "practice",
+    "title": "Let's practice",
+    "teacher_question": "Imagine you're visiting my office and I offer you a drink. I'll ask, 'Would you like some coffee?' or 'Would you like some tea?' Use the frames below to answer.",
+    "student_guide": [
+      "Yes, ___.",
+      "No, ___.",
+      "Just ___, please."
+    ]
+  },
+  {
+    "type": "scenario",
+    "title": "Real-world scenario",
+    "role_a": "Tutor: You are the host. Offer the guest coffee and tea.",
+    "role_b": "Student: You are the guest. Listen to the host and respond.",
+    "problem": "The host will offer you coffee and tea. You want one of the drinks, but not the other.",
+    "mission": [
+      "Listen to the host offer you coffee.",
+      "Listen to the host offer you tea.",
+      "Say 'Yes, please' to one drink and 'No, thank you' to the other."
+    ],
+    "start": "Welcome! Come on in. Would you like some coffee?"
+  },
+  {
+    "type": "wrap_up",
+    "title": "Wrap-up",
+    "recap": [
+      "Vocabulary: yes, please, no, thank you",
+      "Chunks: Yes, please. / No, thank you. / Just water, please.",
+      "Skill: I can politely accept or decline a drink."
+    ],
+    "final_task": "Use one of today's chunks to respond to this offer: 'Would you like some coffee?'",
+    "challenge": "Try using these polite responses the next time someone offers you a drink."
+  }
+]

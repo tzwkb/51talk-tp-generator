@@ -1,0 +1,129 @@
+[
+  {
+    "type": "title",
+    "unit": "Students can welcome a guest, introduce someone, make basic small talk, and politely offer a drink.",
+    "lesson": "Lesson 2: Introducing others",
+    "objective": "Introduce family members or colleagues to a guest.",
+    "emoji": "🎯"
+  },
+  {
+    "type": "warm_up",
+    "title": "Warm-up",
+    "subtitle": "Let's talk about guests and family.",
+    "question": "Who do you introduce when guests visit your home?",
+    "starters": [
+      "I usually introduce my...",
+      "When I have guests over, I introduce my..."
+    ]
+  },
+  {
+    "type": "useful_language_1",
+    "title": "Useful language (part 1)",
+    "teacher_instructions": [
+      "Read each word aloud and have the student repeat it.",
+      "Read the definitions and example sentences.",
+      "Ask the check questions to confirm understanding.",
+      "Ask the student to make a sentence using one of the words."
+    ],
+    "words": [
+      {
+        "word": "father",
+        "emoji": "👨",
+        "definition": "A male parent; a dad.",
+        "example": "This is my father, John.",
+        "check": "Who is older, you or your father?"
+      },
+      {
+        "word": "brother",
+        "emoji": "👦",
+        "definition": "A boy or man who shares the same parents as you.",
+        "example": "Meet my brother, Tom.",
+        "check": "Is a brother a boy in your family or a man at work?"
+      }
+    ]
+  },
+  {
+    "type": "useful_language_2",
+    "title": "Useful Language (Part 2)",
+    "teacher_instructions": [
+      "Read each word aloud and have the student repeat it.",
+      "Read the definition and example sentence.",
+      "Ask the check question to confirm understanding.",
+      "Ask the student to make a sentence using one of the words."
+    ],
+    "words": [
+      {
+        "word": "friend",
+        "emoji": "🤝",
+        "definition": "A person you know well and like.",
+        "example": "Meet my friend Sarah.",
+        "check": "Is a friend someone you know well, or someone you don't know?"
+      },
+      {
+        "word": "colleague",
+        "emoji": "💼",
+        "definition": "A person you work with.",
+        "example": "This is my colleague David.",
+        "check": "Do you usually see a colleague at home or at work?"
+      }
+    ]
+  },
+  {
+    "type": "conversation_builder",
+    "title": "Conversation Builder",
+    "goal": "Learn how to introduce people to a guest.",
+    "linkers": [
+      {
+        "word": "This is my...",
+        "use": "Use this to introduce someone to your guest."
+      },
+      {
+        "word": "He is my...",
+        "use": "Use this to explain your relationship to a man or boy."
+      },
+      {
+        "word": "Meet my...",
+        "use": "Use this to introduce someone in a friendly way."
+      }
+    ],
+    "model": "Student: Hello! Meet my colleague, Sarah.\nTutor: It's nice to meet you, Sarah.\nStudent: Oh, and this is John. He is my brother.",
+    "your_turn": {
+      "teacher": "Hi! It's great to be here.",
+      "student": "Hello! [Use the phrases to introduce your father or a friend.]"
+    }
+  },
+  {
+    "type": "practice",
+    "title": "Let's Practice",
+    "teacher_question": "Imagine I am a guest at your home or office. Please introduce three people to me. You can introduce your father, brother, friend, or colleague. Use the phrases below to help you.",
+    "student_guide": [
+      "This is my ___.",
+      "He is my ___.",
+      "Meet my ___."
+    ]
+  },
+  {
+    "type": "scenario",
+    "title": "Real-world scenario",
+    "role_a": "You are the host.",
+    "role_b": "You are the guest.",
+    "problem": "The tutor is visiting your home or office. Welcome them and introduce your imaginary colleague or brother.",
+    "mission": [
+      "Welcome the tutor.",
+      "Introduce your colleague or brother using 'This is my...' or 'Meet my...'.",
+      "Make some simple small talk."
+    ],
+    "start": "Hi! It's great to see you. Thanks for having me."
+  },
+  {
+    "type": "wrap_up",
+    "title": "Wrap-up",
+    "recap": [
+      "Vocabulary: father, brother, friend, colleague",
+      "Chunks: This is my... / He is my... / Meet my...",
+      "Skill: Introduce family members or colleagues to a guest."
+    ],
+    "final_task": "Use one of today's phrases to introduce your friend to your tutor.",
+    "challenge": "Try introducing a friend or family member in English this week."
+  }
+]

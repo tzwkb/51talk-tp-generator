@@ -1,0 +1,129 @@
+[
+  {
+    "type": "title",
+    "unit": "Students can describe their daily study routines, discuss learning tools, and share advice on building good study habits while balancing school and family life.",
+    "lesson": "Lesson 1: My daily study routine",
+    "objective": "Describe your everyday study habits after school.",
+    "emoji": "🎯"
+  },
+  {
+    "type": "warm_up",
+    "title": "Warm up",
+    "subtitle": "What do you usually do after school?",
+    "question": "What do you usually do to study in the afternoon?",
+    "starters": [
+      "After school, I usually...",
+      "When I get home, I..."
+    ]
+  },
+  {
+    "type": "useful_language_1",
+    "title": "Useful Language (Part 1)",
+    "teacher_instructions": [
+      "Read each phrase aloud and ask the student to repeat.",
+      "Read the definition and example sentence.",
+      "Ask the check question to confirm understanding.",
+      "Ask the student to make their own sentence using one of the phrases."
+    ],
+    "words": [
+      {
+        "word": "do homework",
+        "emoji": "📚",
+        "definition": "to complete schoolwork at home",
+        "example": "I do my homework every day after school.",
+        "check": "When do you usually do your homework: in the afternoon or at night?"
+      },
+      {
+        "word": "take a break",
+        "emoji": "☕",
+        "definition": "to stop working or studying for a short time to rest",
+        "example": "I usually take a break and drink some water after an hour.",
+        "check": "When you take a break, do you usually watch TV or eat a snack?"
+      }
+    ]
+  },
+  {
+    "type": "useful_language_2",
+    "title": "Useful Language (Part 2)",
+    "teacher_instructions": [
+      "Read each phrase aloud and ask the student to repeat.",
+      "Read the definition and the example sentence.",
+      "Ask the check question to confirm understanding.",
+      "Ask the student to make their own sentence using one of the phrases."
+    ],
+    "words": [
+      {
+        "word": "review notes",
+        "emoji": "📝",
+        "definition": "to read your class notes again to help you remember them",
+        "example": "I review my notes before I start my English homework.",
+        "check": "Do you prefer to review your notes on paper or on a computer?"
+      },
+      {
+        "word": "finish school",
+        "emoji": "🏫",
+        "definition": "to end your classes for the day",
+        "example": "I finish school at 3:00 p.m. and take the bus home.",
+        "check": "Do you usually finish school in the afternoon or in the evening?"
+      }
+    ]
+  },
+  {
+    "type": "conversation_builder",
+    "title": "Conversation Builder",
+    "goal": "Learn how to describe your daily study routine in order.",
+    "linkers": [
+      {
+        "word": "First, I...",
+        "use": "Introduce the first step of your routine."
+      },
+      {
+        "word": "After that, I...",
+        "use": "Introduce the next activity."
+      },
+      {
+        "word": "Then, I usually...",
+        "use": "Describe an activity you normally do later."
+      }
+    ],
+    "model": "First, I finish school. After that, I take a short break. Then, I usually do my homework and review my notes.",
+    "your_turn": {
+      "teacher": "Ask the student: So, tell me about your study routine. What do you usually do after school?",
+      "student": "Well, first, I... After that, I... Then, I usually..."
+    }
+  },
+  {
+    "type": "practice",
+    "title": "Let's practice",
+    "teacher_question": "Imagine I'm a new student at your school and I want to know how you study. Tell me about your afternoon study routine using phrases like 'finish school', 'take a break', 'do homework', or 'review notes'.",
+    "student_guide": [
+      "First, I ___.",
+      "After that, I ___.",
+      "Then, I usually ___."
+    ]
+  },
+  {
+    "type": "scenario",
+    "title": "Real-world scenario",
+    "role_a": "You are a student. Describe your typical afternoon study routine.",
+    "role_b": "Your tutor will act as your mentor. They will ask follow-up questions about what time you do each activity.",
+    "problem": "You need to explain your after-school study habits to your mentor.",
+    "mission": [
+      "Tell your mentor what time you finish school.",
+      "Describe your study routine using 'first', 'after that', and 'then'.",
+      "Answer your mentor's questions about what time you do your homework, take a break, and review your notes."
+    ],
+    "start": "Tutor: Hi there! Let's talk about your study habits. So, what time do you finish school, and what do you do first?"
+  },
+  {
+    "type": "wrap_up",
+    "title": "Wrap-Up",
+    "recap": [
+      "Vocabulary: do homework, take a break, review notes, finish school",
+      "Language chunks: First, I... / After that, I... / Then, I usually...",
+      "Skill: Describe everyday study habits after school."
+    ],
+    "final_task": "Use one of today's phrases to tell me: What is the very first thing you do when you finish school?",
+    "challenge": "Write down your study schedule for tomorrow using 'First', 'After that', and 'Then'!"
+  }
+]
