@@ -1,15 +1,41 @@
-﻿
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
-.env
-.venv
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
 venv/
-ENV/
+.env/
+.venv/
 env/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Output & generated files
 output/
 *.xlsx
-*.html
-!frontend/*.html
-.DS_Store
 
+# Push scripts with tokens
+_push_rest.py
