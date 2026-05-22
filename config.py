@@ -5,10 +5,22 @@ from pathlib import Path
 from openai import OpenAI
 
 # ── AI 模型配置 ──────────────────────────────────────────────
-AI_BASE_URL = "https://api.vectorengine.ai/v1"
-AI_API_KEY  = "sk-UcHLM9G1fYCgefyghOfdMFJuCrA31Hhrc2uHGLTak4IjG03o"
-AI_MODEL    = "gemini-3.1-pro-preview"
-AI_TEMPERATURE = 1.0
+import os
+_env = os.path.join(os.path.dirname(__file__), ".env")
+if os.path.exists(_env):
+    for _line in open(_env, encoding="utf-8"):
+        _line = _line.strip()
+        if _line and not _line.startswith("#") and "=" in _line:
+            _k, _v = _line.split("=", 1)
+            os.environ.setdefault(_k.strip(), _v.strip())
+
+AI_BASE_URL    = os.environ.get("AI_BASE_URL", "https://api.vectorengine.ai/v1")
+AI_API_KEY     = os.environ.get("AI_API_KEY", "")
+AI_MODEL       = os.environ.get("AI_MODEL", "gemini-3.1-pro-preview")
+AI_TEMPERATURE = float(os.environ.get("AI_TEMPERATURE", "1.0"))
+
+if not AI_API_KEY:
+    raise RuntimeError("AI_API_KEY not set. Copy .env.example to .env and fill in your key.")
 
 # ── OpenAI client (dynamic proxy) ───────────────────────────
 class _ClientProxy:
