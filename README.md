@@ -1,43 +1,7 @@
 # 51Talk ESL Lesson Generator
 
-<!-- bilingual-readme:start -->
+[中文](README_ZH.md) | English
 
-## 双语说明 / Bilingual Documentation
-
-> 本节提供整篇 README 的中英双语维护说明；下方保留原始详细说明、命令、路径和配置示例。
-> This section provides bilingual maintenance notes for the full README; the original detailed notes, commands, paths, and configuration examples are preserved below.
-
-### 中文
-
-**概览**：51Talk ESL 教案和课件生成工具，可生成面向沙特成人学习者的 HTML/PDF 课件，并带 Web 界面。
-
-**主要能力**：
-- 生成完整 ESL lesson slide deck。
-- 支持 HTML 和 PDF 输出。
-- 包含 Web 界面以便操作和预览。
-
-**使用方式**：按下方依赖、配置和 Web/脚本入口说明运行。
-
-**状态**：该仓库仍按当前 README 的说明维护或使用。
-
-**注意事项**：该仓库以生产 51Talk 教学计划和课件为核心，不是通用 CMS。
-
-### English
-
-**Overview**: 51Talk ESL teaching-plan and slide-deck generator for Saudi adult learners, with HTML/PDF output and a web interface.
-
-**Key capabilities**:
-- Generates complete ESL lesson slide decks.
-- Supports HTML and PDF deliverables.
-- Includes a web interface for operation and preview.
-
-**Usage**: Follow the dependency, configuration, and web/script entrypoint notes below.
-
-**Status**: This repository is maintained or used according to the current README notes.
-
-**Notes**: This repository focuses on 51Talk teaching-plan and slide production, not a general CMS.
-
-<!-- bilingual-readme:end -->
 
 AI-powered tool for generating complete ESL lesson slide decks (HTML + PDF) for 51Talk adult learners in Saudi Arabia. Now with a full web interface.
 
