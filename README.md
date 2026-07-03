@@ -1,7 +1,9 @@
 # 51Talk ESL Lesson Generator
 
-English | [中文](README_ZH.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.x-blue.svg)](https://www.python.org/)
 
+English | [中文](README_ZH.md)
 
 AI-powered tool for generating complete ESL lesson slide decks (HTML + PDF) for 51Talk adult learners in Saudi Arabia. Now with a full web interface.
 
@@ -139,7 +141,7 @@ All generated content is subject to Middle East content compliance rules (Saudi 
 - No Israel-related or terrorist organization content
 - No magic, astrology, evolution, or occult references
 
-See `🛑 中东青少内容审核红线指南（实习生版）.md` for the full red-line guide.
+See `🛑 中东青少内容审核红线指南（实习生版）.md` for the full Middle East youth content review red-line guide.
 
 ## QA System
 

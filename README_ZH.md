@@ -1,11 +1,23 @@
 # 51Talk ESL Lesson Generator
 
-[English](README.md) | 中文
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.x-blue.svg)](https://www.python.org/)
 
+[English](README.md) | 中文
 
 ## 概览
 
 51Talk ESL 教案和课件生成工具，可生成面向沙特成人学习者的 HTML/PDF 课件，并带 Web 界面。
+
+## 文档对齐说明
+
+本 README_ZH.md 与英文 README.md 使用同一项目事实，但采用中文读者更容易扫描的结构。命令、路径、配置键和示例数据保持原样。
+
+## 主要能力
+
+- 生成单课、整单元和自动运行模式的 ESL 教案。
+- 提供 CLI 和 Web 两套使用流程。
+- 保留内容合规和 QA 检查说明。
 
 ## 主要能力
 
