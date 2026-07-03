@@ -1,6 +1,6 @@
 # 51Talk ESL Lesson Generator
 
-[中文](README_ZH.md) | English
+English | [中文](README_ZH.md)
 
 
 AI-powered tool for generating complete ESL lesson slide decks (HTML + PDF) for 51Talk adult learners in Saudi Arabia. Now with a full web interface.
